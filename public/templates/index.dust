@@ -1,0 +1,57 @@
+{>"layouts/master" /}
+
+{<body}
+    <h1>{@pre type="content" key="greeting"/}</h1>
+
+
+
+<div class="statOptions">
+    <div class="urlInput">
+        <label>URL</label>
+        <input id="url" type="text" name="url">
+    </div>
+    <div class="concurrencyOption">
+        <label>beginConcurrency</label>
+        <input id="beginConcurrency" type="number" value="1" min="1" autocomplete="off">
+    </div>
+    <div class="concurrencyOption">
+        <label>peakConcurrency</label>
+        <input id="peakConcurrency" type="number" value="20" min="1" autocomplete="off">
+    </div>
+    <div class="concurrencyOption">
+        <label>endConcurrency</label>
+        <input id="endConcurrency" type="number" value="20" min="1" autocomplete="off">
+    </div>
+    <div class="concurrencyOption">
+        <label>concurrencyIncrement</label>
+        <input id="concurrencyInc" type="number" value="1" min="1" autocomplete="off">
+    </div>
+    <div class="concurrencyOption">
+        <label>concurrencyDecrement</label>
+        <input id="concurrencyDec" type="number" value="1" min="1" autocomplete="off">
+    </div>
+    <div class="stepRequests">
+        <label>stepRequests</label>
+        <input id="stepRequests" type="number" value="100" min="1" autocomplete="off">
+    </div>
+    <div class="stepDelay">
+        <label>delay</label>
+        <input id="stepDelay" type="number" value="0" min="0" autocomplete="off">
+    </div>
+    <div class="warmupEnabled">
+        <label>enable warmup</label>
+        <select id="warmupEnabled">
+            <option value="true">true</option>
+            <option value="false" selected="selected">false</option>
+        </select>
+    </div>
+	<input type="hidden" name="_csrf" value="{_csrf}" />
+    <div>
+    	<button id="test_submit">
+    		start test
+    	</button>
+    </div>
+</div>
+
+
+{/body}
