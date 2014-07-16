@@ -10,7 +10,7 @@
     <h1>{project.name}</h1>
     <ul>
     {#project.httpStatsOptions} 
-        <li>url:{url}</li>
+        <li>url: {url}</li>
         <li>beginConcurrency: {beginConcurrency}</li>
         <li>peakConcurrency: {peakConcurrency}</li>
         <li>endConcurrency: {endConcurrency}</li>
@@ -36,10 +36,10 @@
         <input type="text" class="datepicker" id="toDatepicker">
     </div>
 
-    <button id="updateGraph">Update graph
+    <button id="updateGraphs">Update graph
     </button>
     <div id="project_results">
     </div>
 
-    <script>window.resultData = {results|js|s} </script>
+    <script>window.resultData = {results|s};</script>
 {/body}

@@ -19,7 +19,7 @@ function parseParameters() {
 }
 
 function validateInput(parameters) {
-    var urlRegex = new RegExp(/^(ht|f)tps?:\/\/[a-z0-9-\.]+/)
+    var urlRegex = new RegExp(/^(ht|f)tps?:\/\/[a-z0-9-\.]+/);
     if (urlRegex.test(parameters.options.url)) {
         return true;
     }
@@ -63,12 +63,6 @@ function createProjectListener() {
     }
 }
 
-function updateGraph() {
-    var from = $('#fromDatepicker').val();
-    var to = $('#toDatepicker').val();
-    console.log(from, to);
-}
-
 function startTest() {
     var csrfToken = $('[name="_csrf"]').val();
     $.post('start_test', {
@@ -98,14 +92,28 @@ function initializeDatepickers() {
     });
 }
 
+/**
+ * This script expects that the data is stored in
+ * window.resultData
+ */
 function updateGraphs() {
-
+    console.log('update graph is called');
+    var data = window.resultData;
+    if (data) {
+        constructResponseTimeGraph(data);
+        constructReqPerSecGraph(data);
+    } else {
+        console.log('no data is found');
+    }
 }
 
-define(['jquery', 'jqueryui'], function(jquery) {
-    //$('#test_submit').click(onClickListener);
-    $('#create_project').click(createProjectListener);
-    initializeDatepickers();
-    $('#updateGraph').click(updateGraph);
-    $('#startTest').click(startTest);
-});
+define(['graphclient', 'jquery', 'jqueryui', 'highcharts'],
+    function(graphClient, jquery) {
+        //$('#test_submit').click(onClickListener);
+        $('#create_project').click(createProjectListener);
+        initializeDatepickers();
+        // $('#updateGraphs').click(updateGraphs);
+        $('#startTest').click(startTest);
+
+        graphClient.constructAllGraphs(window.resultData);
+    });

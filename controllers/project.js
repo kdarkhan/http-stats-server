@@ -96,7 +96,7 @@ module.exports = function(router) {
                         } else {
                             res.render('project_view', {
                                 project: project,
-                                results: results
+                                results: JSON.stringify(results)
                             });
                         }
                     });
