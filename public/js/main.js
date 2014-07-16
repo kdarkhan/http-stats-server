@@ -13,7 +13,7 @@ function parseParameters() {
             concurrencyDecrement: $('#concurrencyDec').val(),
             stepRequests: $('#stepRequests').val(),
             delay: $('#stepDelay').val(),
-            warmup: $('warmupEnabled').val()
+            warmup: $('#warmupEnabled').val()
         }
     };
 }
@@ -49,6 +49,7 @@ function onClickListener() {
 function createProjectListener() {
     console.log('create project clicked');
     var userInput = parseParameters();
+    console.log(userInput);
 
     if (validateInput(userInput)) {
         $('.statOptions input,.statOptions button').prop('disabled', true);
@@ -62,10 +63,49 @@ function createProjectListener() {
     }
 }
 
-define(['jquery'], function(jquery) {
+function updateGraph() {
+    var from = $('#fromDatepicker').val();
+    var to = $('#toDatepicker').val();
+    console.log(from, to);
+}
+
+function startTest() {
+    var csrfToken = $('[name="_csrf"]').val();
+    $.post('start_test', {
+        _csrf: csrfToken
+    }, function(data, status, jqXHR) {
+        console.log(data);
+        console.log(status);
+    });
+}
+
+function initializeDatepickers() {
+    $("#fromDatepicker").datepicker({
+        defaultDate: "-1w",
+        changeMonth: true,
+        maxDate: "today",
+        onClose: function(selectedDate) {
+            $("#toDatepicker").datepicker("option", "minDate", selectedDate);
+        }
+    });
+    $("#toDatepicker").datepicker({
+        defaultDate: "today",
+        changeMonth: true,
+        maxDate: "today",
+        onClose: function(selectedDate) {
+            $("#fromDatepicker").datepicker("option", "maxDate", selectedDate);
+        }
+    });
+}
+
+function updateGraphs() {
+
+}
+
+define(['jquery', 'jqueryui'], function(jquery) {
     //$('#test_submit').click(onClickListener);
     $('#create_project').click(createProjectListener);
-    return {
-        test: 'value'
-    };
+    initializeDatepickers();
+    $('#updateGraph').click(updateGraph);
+    $('#startTest').click(startTest);
 });

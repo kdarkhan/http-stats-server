@@ -4,6 +4,7 @@
 requirejs.config({
     paths: {
     	jquery: "//code.jquery.com/jquery-1.11.0.min",
+        jqueryui: "//code.jquery.com/ui/1.11.0/jquery-ui.min",
     	main: 'main'
     }
 });

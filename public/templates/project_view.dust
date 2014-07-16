@@ -1,7 +1,45 @@
 
 {>"layouts/master" /}
+<!-- stylesheet used by datepicker -->
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 
 {<body}
-    <h1>Single project</h1>
 
+    <input type="hidden" name="_csrf" value="{_csrf}" />
+    <div id="project_options">
+    <h1>{project.name}</h1>
+    <ul>
+    {#project.httpStatsOptions} 
+        <li>url:{url}</li>
+        <li>beginConcurrency: {beginConcurrency}</li>
+        <li>peakConcurrency: {peakConcurrency}</li>
+        <li>endConcurrency: {endConcurrency}</li>
+        <li>concurrencyIncrement: {concurrencyIncrement}</li>
+        <li>concurrencyDecrement: {concurrencyDecrement}</li>
+        <li>stepRequests: {stepRequests}</li>
+        <li>delay: {delay}</li>
+        <li>warmup: {warmup}</li>
+    {/project.httpStatsOptions}
+    </ul>
+    </div>
+
+    <div>
+    <button id="startTest">
+    Start a new test 
+    </button>
+    </div>
+
+    <div id="daterange"
+        <label>From</label>
+        <input type="text" class="datepicker" id="fromDatepicker">
+        <label>To</label>
+        <input type="text" class="datepicker" id="toDatepicker">
+    </div>
+
+    <button id="updateGraph">Update graph
+    </button>
+    <div id="project_results">
+    </div>
+
+    <script>window.resultData = {results|js|s} </script>
 {/body}

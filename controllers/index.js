@@ -3,7 +3,6 @@
 
 var IndexModel = require('../models/index'),
     dbmanager = require('../lib/mongoDbManager'),
-    httpStats = require('http-stats'),
     childProcess = require('child_process'),
     path = require('path');
 

@@ -6,7 +6,7 @@
     <div id="current_projects">
     <ul>
     {#projects}
-    <li><a href="{name}">{name}</a></li>{~n}
+    <li><a href="{name}/">{name}</a></li>{~n}
     {/projects}
     </ul>
     </div>

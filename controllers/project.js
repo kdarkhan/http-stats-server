@@ -1,10 +1,14 @@
 'use strict';
 
-var dbmanager = require('../lib/mongoDbManager');
+var dbmanager = require('../lib/mongoDbManager'),
+    childProcess = require('child_process'),
+    path = require('path');
 
 var PROJECT_COLNAME = 'projects';
 
 module.exports = function(router) {
+
+    var testActive = false;
 
     router.get('/', function(req, res) {
         res.redirect('all');
@@ -27,8 +31,26 @@ module.exports = function(router) {
         });
     });
 
+    function parseProject(options) {
+        var result = {
+            name: options.name,
+            httpStatsOptions: {
+                url: options.url,
+                beginConcurrency: Number(options.beginConcurrency),
+                peakConcurrency: Number(options.peakConcurrency),
+                endConcurrency: Number(options.endConcurrency),
+                concurrencyIncrement: Number(options.concurrencyIncrement),
+                concurrencyDecrement: Number(options.concurrencyDecrement),
+                stepRequests: Number(options.stepRequests),
+                delay: Number(options.delay),
+                warmup: options.warmup
+            }
+        };
+        return result;
+    }
+
     router.post('/create_new', function(req, res) {
-        var newProject = req.body.options;
+        var newProject = parseProject(req.body.options);
         console.log('I am here', newProject);
         if (newProject) {
             console.log('if true');
@@ -76,12 +98,6 @@ module.exports = function(router) {
                                 project: project,
                                 results: results
                             });
-                            /*
-                            res.json({
-                                project: result,
-                                results: results
-                            });
-                            */
                         }
                     });
                 } else {
@@ -92,14 +108,48 @@ module.exports = function(router) {
         });
     });
 
-    router.get('/:name/start_test', function(req, res) {
+    router.post('/:name/start_test', function(req, res) {
         var projectName = req.params.name;
-        dbmanager.getProject(projectName, function(err, result) {
-            if (err || !result) {
+        dbmanager.getProject(projectName, function(err, project) {
+            if (err || !project) {
                 // redirect to current project without start_test
                 res.redirect('.');
             } else {
+                if (testActive) {
+                    res.json({
+                        status: 'Error',
+                        message: 'Another test is already running'
+                    });
+                } else {
+                    testActive = true; 
+                    var childPath = path.resolve(__dirname, '../lib/child.js');
+                    console.log('child path is ', childPath);
 
+                    var child = childProcess.fork(childPath);
+
+                    child.send(project.httpStatsOptions);
+
+                    child.on('message', function(result) {
+                        console.log('child send results ', result);
+                        dbmanager.saveResult(result, projectName, function(err, dbres) {
+                            if (err) {
+                                console.error('err occurred while saving res ', err);
+                            } else {
+                                console.log('successfully wrote to server');
+                            }
+                        });
+                    });
+
+                    child.on('close', function(code) {
+                        console.log('child exited with code ', code);
+                        testActive = false;
+                    });
+
+                    res.json({
+                        status: 'Success',
+                        message: 'Test has started'
+                    });
+                }
             }
         });
     });
