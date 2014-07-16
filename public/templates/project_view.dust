@@ -1,0 +1,7 @@
+
+{>"layouts/master" /}
+
+{<body}
+    <h1>Single project</h1>
+
+{/body}

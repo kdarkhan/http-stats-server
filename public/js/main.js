@@ -3,7 +3,8 @@
 function parseParameters() {
     return {
         _csrf: $('[name="_csrf"]').val(),
-        startOptions: {
+        options: {
+            name: $('#projectName').val(),
             url: $('#url').val(),
             beginConcurrency: $('#beginConcurrency').val(),
             peakConcurrency: $('#peakConcurrency').val(),
@@ -19,7 +20,7 @@ function parseParameters() {
 
 function validateInput(parameters) {
     var urlRegex = new RegExp(/^(ht|f)tps?:\/\/[a-z0-9-\.]+/)
-    if (urlRegex.test(parameters.startOptions.url)) {
+    if (urlRegex.test(parameters.options.url)) {
         return true;
     }
     return false;
@@ -38,18 +39,32 @@ function onClickListener() {
             function(data, status, jqXHR) {
                 console.log('data', data);
                 console.log('status', status);
-                console.log('jqXHR', jqXHR);
                 $('.statOptions input,.statOptions button').prop('disabled', false);
             });
     } else {
         console.log('you provided invalid input');
     }
+}
 
+function createProjectListener() {
+    console.log('create project clicked');
+    var userInput = parseParameters();
 
+    if (validateInput(userInput)) {
+        $('.statOptions input,.statOptions button').prop('disabled', true);
+
+        $.post('create_new', userInput, function(data, status, jqXHR) {
+            console.log('data', data);
+            console.log('status', status);
+
+            $('.statOptions input,.statOptions button').prop('disabled', false);
+        });
+    }
 }
 
 define(['jquery'], function(jquery) {
-    $('#test_submit').click(onClickListener);
+    //$('#test_submit').click(onClickListener);
+    $('#create_project').click(createProjectListener);
     return {
         test: 'value'
     };

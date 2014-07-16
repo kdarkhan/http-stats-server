@@ -2,7 +2,6 @@
 
 
 var IndexModel = require('../models/index'),
-    nconf = require('nconf'),
     dbmanager = require('../lib/mongoDbManager'),
     httpStats = require('http-stats'),
     childProcess = require('child_process'),
@@ -22,7 +21,9 @@ module.exports = function(router) {
     var model = new IndexModel();
 
     var testActive = false;
-    var logMessage = '';
+
+    var stdout = '';
+    var stderr = '';
 
     router.get('/', function(req, res) {
         res.render('index', model);
@@ -34,18 +35,18 @@ module.exports = function(router) {
         console.log('body is', req.body);
 
         if (!isValidRequest(req.body)) {
-            res.send(JSON.stringify({
+            res.json(400, {
                 status: 'Error',
                 message: 'Invalid request body'
-            }));
+            });
             return;
         }
 
         if (testActive) {
-            res.send(JSON.stringify({
+            res.send(500, {
                 status: 'Error',
                 message: 'Another test is already active'
-            }));
+            });
         } else {
             testActive = true;
 
@@ -54,15 +55,19 @@ module.exports = function(router) {
 
             var child = childProcess.fork(childPath);
 
-
-            console.log('send to child');
-
             // send arguments to the client
             child.send(req.body.startOptions);
 
             // child send the results
             child.on('message', function(result) {
                 console.log('child send the results to parent', result);
+                dbmanager.saveResult(result, function(err, res) {
+                    if (err) {
+                        console.log('err occurred during write', err);
+                    } else {
+                        console.log('write was successfull', res);  
+                    }
+                });
             });
 
             child.on('close', function(code) {
@@ -70,10 +75,10 @@ module.exports = function(router) {
                 testActive = false;
             });
 
-            res.send(JSON.stringify({
+            res.json({
                 status: 'Success',
                 message: 'Test has started'
-            }));
+            });
         }
     });
 };

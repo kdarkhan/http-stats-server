@@ -20,8 +20,7 @@ nconf.argv()
     });
 
 dbmanager.connect({
-        connectUri: nconf.get('mongodb:connectionUri'),
-        collectionName: nconf.get('mongodb:collectionName')
+        connectUri: nconf.get('mongodb:connectionUri')
     },
     function(err, res) {
         console.log('done');

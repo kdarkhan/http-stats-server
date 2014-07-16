@@ -1,14 +1,25 @@
+
 {>"layouts/master" /}
 
 {<body}
-    <h1>{@pre type="content" key="greeting"/}</h1>
+    <h1>Current projects</h1>
+    <div id="current_projects">
+    <ul>
+    {#projects}
+    <li><a href="{name}">{name}</a></li>{~n}
+    {/projects}
+    </ul>
+    </div>
 
-
-
+    <h1>Create new project</h1>
 <div class="statOptions">
+    <div class="projectName">
+        <label>projectName</label>
+        <input id="projectName" type="text" name="projectName">
+    </div>
     <div class="urlInput">
         <label>URL</label>
-        <input id="url" type="text" name="url">
+        <input id="url" type="text" name="url" value="http://localhost:8000">
     </div>
     <div class="concurrencyOption">
         <label>beginConcurrency</label>
@@ -45,13 +56,11 @@
             <option value="false" selected="selected">false</option>
         </select>
     </div>
-	<input type="hidden" name="_csrf" value="{_csrf}" />
+    <input type="hidden" name="_csrf" value="{_csrf}" />
     <div>
-    	<button id="test_submit">
-    		start test
-    	</button>
+        <button id="create_project">
+            create project 
+        </button>
     </div>
 </div>
-
-
 {/body}

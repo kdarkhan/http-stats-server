@@ -76,7 +76,6 @@
 
     },
     "mongodb": { 
-        "connectionUri": "mongodb://localhost/http-stats-server",
-        "collectionName": "results"
+        "connectionUri": "mongodb://localhost/http-stats-server"
     }
 }
