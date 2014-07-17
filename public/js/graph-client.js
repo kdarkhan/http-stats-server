@@ -59,10 +59,22 @@ function constructAllGraphs(data) {
             timestamps.push(new Date(timedata.timestamp).getTime());
         });
 
+        // disable all series except first and last
+        var concurrencyCount = array[0].steps.length;
+        for (var i = 0; i < concurrencyCount; i++) {
+            if (i !== 0 && i !== concurrencyCount - 1) {
+                reqPerSecData[i].visible = false;
+                responseTimeData[i].visible = false;
+                cpuData[i].visible = false;
+                memoryData[i].visible = false;
+            }
+        }
+
         for (var i = 0; i < array.length; i++) {
             var timePoint = data[i];
             // timestamps.push(new Date(timePoint.timestamp).getTime());
             var steps = timePoint.steps;
+
             for (var j = 0; j < steps.length; j++) {
                 var stats = steps[j].stats;
                 reqPerSecData[j].data.push([timestamps[i], toFixed(stats.requestsPerSecond.mean, 2)]);
@@ -100,17 +112,19 @@ function constructAllGraphs(data) {
                 var averageArray = [];
                 var concurrencyCount = parameter.length;
                 var timeCount = parameter[0].data.length;
-                for (var i = 0; i < timeCount; i++) {
-                    var sum = 0;
-                    for (var j = 0; j < concurrencyCount; j++) {
-                        sum += parameter[j].data[i][1];
+                if (timeCount > 1) {
+                    for (var i = 0; i < timeCount; i++) {
+                        var sum = 0;
+                        for (var j = 0; j < concurrencyCount; j++) {
+                            sum += parameter[j].data[i][1];
+                        }
+                        averageArray.push([parameter[0].data[i][0], toFixed(sum / concurrencyCount, 2)]);
                     }
-                    averageArray.push([parameter[0].data[i][0], toFixed(sum / concurrencyCount, 2)]);
+                    parameter.push({
+                        name: 'average',
+                        data: averageArray
+                    });
                 }
-                parameter.push({
-                    name: 'average',
-                    data: averageArray
-                });
             }
         });
     }
@@ -298,8 +312,6 @@ function constructAllGraphs(data) {
         addAveragesToData(parsedData);
         $(function() {
             var concurrencyClasses = [];
-            //concurrencyClasses.push(addRequestPerSecGraphs(parsedData.reqPerSecData, parsedData.timestamps));
-            //concurrencyClasses.push(addResponseTimeGraphs(parsedData.responseTime, parsedData.timestamps));
 
             if (showCPU) {
                 //concurrencyClasses.push(addCPUGraphs(parsedData.cpuData, parsedData.timestamps));
@@ -307,11 +319,6 @@ function constructAllGraphs(data) {
             if (showMemory) {
                 //concurrencyClasses.push(addMemoryGraphs(parsedData.memoryData, parsedData.timestamps));
             }
-            //addConcurrencyFilter(concurrencyClasses);
-            //addGraphTypeFilter();
-            //window.multiselect();
-
-            //addFilters(concurrencyClasses);
 
             addReqPerSecGraph(parsedData.reqPerSecData, parsedData.timestamps);
             addResponseTimeGraph(parsedData.responseTime, parsedData.timestamps);
