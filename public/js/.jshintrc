@@ -8,17 +8,19 @@
     "couch": false,
     "wsh": false,
 
-    "jquery": false,
+    "jquery": true,
     "prototypejs": false,
     "mootools": false,
     "dojo": false,
 
     "debug": false,
-    "devel": false,
+    "devel": true,
 
     "es5": true,
     "strict": true,
     "globalstrict": true,
+
+    "unused": true,
 
     "asi": false,
     "laxbreak": false,

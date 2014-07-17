@@ -39,6 +39,8 @@
     <button id="updateGraphs">Update graph
     </button>
     <div id="project_results">
+        <div id="reqPerSecGraph"></div>
+        <div id="responseTimeGraph"></div>
     </div>
 
     <script>window.resultData = {results|s};</script>
