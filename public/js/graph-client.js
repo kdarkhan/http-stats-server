@@ -14,7 +14,7 @@ function constructAllGraphs(data) {
     }
 
     function validateData(array) {
-        if (array.length) {
+        if (array && array.length) {
             stepCount = array[0].steps.length;
             array.forEach(function(item) {
                 if (stepCount !== item.steps.length) {
