@@ -56,7 +56,7 @@ function constructAllGraphs(data) {
 
         // get timestamps
         data.forEach(function(timedata) {
-            timestamps.push(new Date(timedata.timestamp).getTime()); 
+            timestamps.push(new Date(timedata.timestamp).getTime());
         });
 
         for (var i = 0; i < array.length; i++) {
@@ -65,19 +65,20 @@ function constructAllGraphs(data) {
             var steps = timePoint.steps;
             for (var j = 0; j < steps.length; j++) {
                 var stats = steps[j].stats;
-                reqPerSecData[j].data.push(toFixed(stats.requestsPerSecond.mean, 2));
-                responseTimeData[j].data.push(toFixed(stats.responseTime.mean, 2));
+                reqPerSecData[j].data.push([timestamps[i], toFixed(stats.requestsPerSecond.mean, 2)]);
+                responseTimeData[j].data.push([timestamps[i], toFixed(stats.responseTime.mean, 2)]);
                 if (stats.usage) {
                     var usage = stats.usage[0];
                     if (showCPU) {
-                        cpuData[j].data.push(toFixed(usage.cpu.mean, 2));
+                        cpuData[j].data.push([timestamps[i], toFixed(usage.cpu.mean, 2)]);
                     }
                     if (showMemory) {
-                        memoryData[j].data.push(toFixed(usage.memory.mean, 2));
+                        memoryData[j].data.push([timestamps[i], toFixed(usage.memory.mean, 2)]);
                     }
                 }
             }
         }
+
         var result = {
             reqPerSecData: reqPerSecData,
             responseTime: responseTimeData,
@@ -102,9 +103,9 @@ function constructAllGraphs(data) {
                 for (var i = 0; i < timeCount; i++) {
                     var sum = 0;
                     for (var j = 0; j < concurrencyCount; j++) {
-                        sum += parameter[j].data[i];
+                        sum += parameter[j].data[i][1];
                     }
-                    averageArray.push(toFixed(sum / concurrencyCount, 2));
+                    averageArray.push([parameter[0].data[i][0], toFixed(sum / concurrencyCount, 2)]);
                 }
                 parameter.push({
                     name: 'average',
@@ -113,89 +114,10 @@ function constructAllGraphs(data) {
             }
         });
     }
-/*
-    function addRequestPerSecGraphs(reqPerSecData, timestamps, container) {
-        return addGraphsToContainer({
-            data: reqPerSecData,
-            container: container,
-            idPrefix: 'reqPerSec_',
-            className: 'reqPerSec',
-            timestamps: timestamps,
-            xTitle: 'Time',
-            tTitle: 'Requests per second',
-            title: 'Requests per second with concurrency ',
-            averageTitle: 'Average requests per second'
-        });
-    }
 
-*/
-
-/*
-    function addResponseTimeGraphs(responseTimeData, timestamps, container) {
-        return addGraphsToContainer({
-            data: responseTimeData,
-            container: container,
-            idPrefix: 'resopnseTime_',
-            className: 'responseTime',
-            timestamps: timestamps,
-            xTitle: 'Time',
-            tTitle: 'Response time, ms',
-            title: 'Response time with concurrency ',
-            averageTitle: 'Average response time'
-        });
-    }
-*/
-
-/*
-    function addCPUGraphs(cpuUsage, timestamps, container) {
-        return addGraphsToContainer({
-            data: cpuUsage,
-            container: container,
-            idPrefix: 'cpuUsage_',
-            className: 'cpuUsage',
-            timestamps: timestamps,
-            xTitle: 'Time',
-            tTitle: 'CPU usage',
-            title: 'CPU usage with concurrency ',
-            averageTitle: 'Average CPU usage'
-        });
-    }
-
-    */
-
-    /*
-
-    function addMemoryGraphs(memoryUsageData, timestamps, container) {
-        return addGraphsToContainer({
-            data: memoryUsageData,
-            container: container,
-            idPrefix: 'memoryUsage_',
-            className: 'memoryUsage',
-            timestamps: timestamps,
-            xTitle: 'Time',
-            tTitle: 'Memory usage',
-            title: 'Memory usage with concurrency ',
-            averageTitle: 'Average memory usage'
-        });
-    }
-    */
-
-
-    function newAddReqPerSecGraph(data, timestamps) {
+    function addReqPerSecGraph(data, timestamps) {
         console.log('data', data);
         console.log('time', timestamps);
-        var series = [];
-        for (var i = 0; i < data.length; i++) {
-            var concurrencyData = data[i];
-            var seriesData = {
-                name: concurrencyData.name,
-                data: []
-            };
-            for (var j = 0; j < timestamps.length; j++) {
-                seriesData.data.push([timestamps[j], concurrencyData.data[j]]);
-            }
-            series.push(seriesData);
-        }
 
         $('#reqPerSecGraph').highcharts({
             chart: {
@@ -229,82 +151,54 @@ function constructAllGraphs(data) {
             credits: {
                 enabled: false
             },
-            series: series,
+            series: data,
             useUTC: false
         });
     }
-/*
-    function addGraphsToContainer(options) {
-        var data = options.data;
-        var container = options.container || 'body';
-        var idPrefix = options.idPrefix;
-        var className = options.className;
-        var timestamps = options.timestamps;
-        var classList = [];
-        var steps = data.length;
-        for (var i = 0; i < steps; i++) {
-            var info = data[i];
-            var divId = idPrefix + i;
-            var classes = 'concurrency_' + info.name;
-            classList.push(classes);
-            classes += ' ' + className;
-            var newDiv = '<div id="' + divId + '" class="' + classes + '"></div>';
-            $(container).append(newDiv);
-            $('#' + divId).highcharts(getGenericGraph({
-                title: info.name === 'average' ? options.averageTitle : (options.title + info.name),
-                xTitle: options.xTitle,
-                yTitle: options.yTitle,
-                series: [info],
-                xCategories: timestamps
-            }));
-        }
-        return classList;
 
-    }
-*/
 
-/*
-    function getGenericGraph(options) {
-        var title = options.title || 'Graph';
-        var type = options.type || 'line';
-        var xTitle = options.xTitle;
-        var xCategories = options.xCategories;
-        var yTitle = options.yTitle;
-        var series = options.series || [];
-        return {
+
+    function addResponseTimeGraph(data, timestamps) {
+        console.log('data', data);
+        console.log('time', timestamps);
+
+        $('#responseTimeGraph').highcharts({
             chart: {
-                type: type,
+                type: 'spline',
+                zoomType: 'xy'
             },
             title: {
-                text: title
+                text: 'Response time'
             },
             xAxis: {
-                categories: xCategories,
+                type: 'datetime',
+                dateTimeLabelFormats: { // don't display the dummy year
+                    month: '%e. %b',
+                    year: '%b'
+                },
                 title: {
-                    text: xTitle
+                    text: 'Date'
                 }
             },
             yAxis: {
-                min: 0,
                 title: {
-                    text: yTitle
-                }
+                    text: 'Response time, ms'
+                },
+                min: 0
             },
-            plotOptions: {
-                line: {
-                    dataLabels: {
-                        enabled: false
-                    },
-                    enableMouseTracking: true
-                }
-            },
+            /*
+                        tooltip: {
+                            headerFormat: '<b>{series.name} concurrency</b><br>',
+                            pointFormat: '{point.x:%e. %b}: {point.y:.2f} m'
+                        },*/
             credits: {
                 enabled: false
             },
-            series: series
-        };
+            series: data,
+            useUTC: false
+        });
     }
-*/
+
     function addFilters(concurrencyClasses) {
         var hiddenClasses = [];
 
@@ -419,7 +313,8 @@ function constructAllGraphs(data) {
 
             //addFilters(concurrencyClasses);
 
-            newAddReqPerSecGraph(parsedData.reqPerSecData, parsedData.timestamps);
+            addReqPerSecGraph(parsedData.reqPerSecData, parsedData.timestamps);
+            addResponseTimeGraph(parsedData.responseTime, parsedData.timestamps);
         });
     }
 }
@@ -440,13 +335,11 @@ define(['jquery', 'highcharts'], function(jquery, highcharts) {
      */
 
     // Load the fonts
-    /*
     Highcharts.createElement('link', {
         href: 'http://fonts.googleapis.com/css?family=Unica+One',
         rel: 'stylesheet',
         type: 'text/css'
     }, null, document.getElementsByTagName('head')[0]);
-*/
 
     Highcharts.theme = {
         colors: ["#2b908f", "#90ee7e", "#f45b5b", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
@@ -655,7 +548,6 @@ define(['jquery', 'highcharts'], function(jquery, highcharts) {
 
     // Apply the theme
     Highcharts.setOptions(Highcharts.theme);
-
 
 
 
