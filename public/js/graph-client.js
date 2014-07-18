@@ -13,6 +13,7 @@ define([
         console.log('moment is ', moment().format());
 
         function constructAllGraphs(data) {
+            var dateFormat = 'MMM Do YYYY, h:mm:ss a';
 
 
             console.log('original data', data);
@@ -60,7 +61,8 @@ define([
 
                 // get timestamps
                 array.forEach(function(timedata) {
-                    timestamps.push(new Date(timedata.timestamp).getTime());
+                    // timestamps.push(new Date(timedata.timestamp).getTime());
+                    timestamps.push(moment(timedata.timestamp).format(dateFormat));
                 });
 
                 // disable all series except first and last
@@ -81,8 +83,8 @@ define([
 
                     for (var j = 0; j < steps.length; j++) {
                         var stats = steps[j].stats;
-                        reqPerSecData[j].data.push([timestamps[i], toFixed(stats.requestsPerSecond.mean, 2)]);
-                        responseTimeData[j].data.push([timestamps[i], toFixed(stats.responseTime.mean, 2)]);
+                        reqPerSecData[j].data.push(toFixed(stats.requestsPerSecond.mean, 2));
+                        responseTimeData[j].data.push(toFixed(stats.responseTime.mean, 2));
                         if (stats.usage) {
                             var usage = stats.usage[0];
                             if (showCPU) {
@@ -114,7 +116,6 @@ define([
                 var responseTimeSeries = [];
                 var cpuSeries = [];
                 var memorySeries = [];
-                var dateFormat = 'MMM Do YYYY, h:mm:ss a';
 
                 array.forEach(function(sample) {
                     var reqPerSecData = [];
@@ -150,7 +151,7 @@ define([
 
                 // hide older series
                 var hideBefore = reqPerSecSeries.length - 5;
-                for(var i = 0; i < hideBefore; i++) {
+                for (var i = 0; i < hideBefore; i++) {
                     reqPerSecSeries[i].visible = false;
                     responseTimeSeries[i].visible = false;
                     cpuSeries[i].visible = false;
@@ -175,9 +176,9 @@ define([
                             for (var i = 0; i < timeCount; i++) {
                                 var sum = 0;
                                 for (var j = 0; j < concurrencyCount; j++) {
-                                    sum += parameter[j].data[i][1];
+                                    sum += parameter[j].data[i];
                                 }
-                                averageArray.push([parameter[0].data[i][0], toFixed(sum / concurrencyCount, 2)]);
+                                averageArray.push(toFixed(sum / concurrencyCount, 2));
                             }
                             parameter.push({
                                 name: 'average',
@@ -201,14 +202,14 @@ define([
                         text: 'Requests per second over time'
                     },
                     xAxis: {
-                        type: 'datetime',
                         dateTimeLabelFormats: { // don't display the dummy year
                             month: '%e. %b',
                             year: '%b'
                         },
                         title: {
-                            text: 'Date'
-                        }
+                            text: 'timestamp'
+                        },
+                        categories: timestamps
                     },
                     yAxis: {
                         title: {
@@ -244,8 +245,9 @@ define([
                             year: '%b'
                         },
                         title: {
-                            text: 'Date'
-                        }
+                            text: 'timestamp'
+                        },
+                        categories: timestamps
                     },
                     yAxis: {
                         title: {
