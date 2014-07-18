@@ -1,21 +1,28 @@
 'use strict';
 
 
-requirejs.config({
+require.config({
     paths: {
-    	jquery: "//code.jquery.com/jquery-1.11.0.min",
-        jqueryui: "//code.jquery.com/ui/1.11.0/jquery-ui.min",
-        highcharts: '//code.highcharts.com/highcharts',
+        jquery: '//code.jquery.com/jquery-1.11.0.min',
+        jqueryui: '//code.jquery.com/ui/1.11.0/jquery-ui.min',
+        moment: 'moment',
+        hcoptions: 'hc-options',
         graphclient: 'graph-client',
-    	main: 'main'
+        main: 'main'
+    },
+    shim: {
+        'highcharts': {
+            'exports': 'Highcharts',
+            'deps': ['jquery']
+        },
     }
 });
 
 
-require(['main'], function (main) {
+require(['main'], function(main) {
 
     var app = {
-        initialize: function () {
+        initialize: function() {
             // Your code here
         }
     };
