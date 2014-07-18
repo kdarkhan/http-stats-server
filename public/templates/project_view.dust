@@ -39,10 +39,15 @@
     <button id="updateGraphs">Update graph
     </button>
     <div id="project_results">
-        <div id="reqPerSecGraph"></div>
-        <div id="responseTimeGraph"></div>
-        <div id="cpuUsageGraph"></div>
-        <div id="memoryUsageGraph"></div>
+        <div id="reqPerSecGraphTime"></div>
+        <div id="responseTimeGraphTime"></div>
+        <div id="cpuUsageGraphTime"></div>
+        <div id="memoryUsageGraphTime"></div>
+
+        <div id="reqPerSecGraphConcurrency"></div>
+        <div id="responseTimeGraphConcurrency"></div>
+        <div id="cpuUsageGraphConcurrency"></div>
+        <div id="memoryUsageGraphConcurrency"></div>
     </div>
 
     <script>window.resultData = {results|s};</script>

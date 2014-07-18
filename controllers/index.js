@@ -9,6 +9,7 @@ var PROJECT_COLNAME = 'projects';
 module.exports = function(router) {
 
     var testActive = false;
+    var childStreams;
 
     router.get('/', function(req, res) {
         dbmanager.getAllProjects(function(err, projects) {
@@ -117,11 +118,19 @@ module.exports = function(router) {
                         message: 'Another test is already running'
                     });
                 } else {
-                    testActive = true; 
+                    testActive = true;
+                    childStreams = {
+                        stdout: '',
+                        stdin: '',
+                        stderr: ''
+                    };
+
                     var childPath = path.resolve(__dirname, '../lib/child.js');
                     console.log('child path is ', childPath);
 
-                    var child = childProcess.fork(childPath);
+                    var child = childProcess.fork(childPath, {
+                        silent: true
+                    });
 
                     child.send(project.httpStatsOptions);
 
@@ -139,6 +148,13 @@ module.exports = function(router) {
                     child.on('close', function(code) {
                         console.log('child exited with code ', code);
                         testActive = false;
+                        console.log('child stdout was ', childStreams.stdout);
+                    });
+
+                    Object.keys(childStreams).forEach(function(stream) {
+                        child[stream].on('data', function(chunk) {
+                            childStreams[stream] += chunk;
+                        });
                     });
 
                     res.json({
@@ -148,5 +164,9 @@ module.exports = function(router) {
                 }
             }
         });
+    });
+
+    router.get('/:name/get_logs', function(req, res) {
+        res.json(childStreams);
     });
 };

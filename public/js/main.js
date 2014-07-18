@@ -26,25 +26,6 @@ function validateInput(parameters) {
     return false;
 }
 
-function onClickListener() {
-    console.log('clicked');
-
-
-    var userInput = parseParameters();
-
-    if (validateInput(userInput)) {
-        $('.statOptions input,.statOptions button').prop('disabled', true);
-        $.post('/start_test',
-            parseParameters(),
-            function(data, status, jqXHR) {
-                console.log('data', data);
-                console.log('status', status);
-                $('.statOptions input,.statOptions button').prop('disabled', false);
-            });
-    } else {
-        console.log('you provided invalid input');
-    }
-}
 
 function createProjectListener() {
     console.log('create project clicked');
@@ -74,37 +55,22 @@ function startTest() {
 }
 
 function initializeDatepickers() {
-    $("#fromDatepicker").datepicker({
-        defaultDate: "-1w",
+    $('#fromDatepicker').datepicker({
+        defaultDate: '-1w',
         changeMonth: true,
-        maxDate: "today",
+        maxDate: 'today',
         onClose: function(selectedDate) {
-            $("#toDatepicker").datepicker("option", "minDate", selectedDate);
+            $('#toDatepicker').datepicker('option', 'minDate', selectedDate);
         }
     });
-    $("#toDatepicker").datepicker({
-        defaultDate: "today",
+    $('#toDatepicker').datepicker({
+        defaultDate: 'today',
         changeMonth: true,
-        maxDate: "today",
+        maxDate: 'today',
         onClose: function(selectedDate) {
-            $("#fromDatepicker").datepicker("option", "maxDate", selectedDate);
+            $('#fromDatepicker').datepicker('option', 'maxDate', selectedDate);
         }
     });
-}
-
-/**
- * This script expects that the data is stored in
- * window.resultData
- */
-function updateGraphs() {
-    console.log('update graph is called');
-    var data = window.resultData;
-    if (data) {
-        constructResponseTimeGraph(data);
-        constructReqPerSecGraph(data);
-    } else {
-        console.log('no data is found');
-    }
 }
 
 define(['graphclient', 'jquery', 'jqueryui', 'highcharts'],
