@@ -29,6 +29,7 @@
     </button>
     </div>
 
+    <!--
     <div id="daterange"
         <label>From</label>
         <input type="text" class="datepicker" id="fromDatepicker">
@@ -38,16 +39,24 @@
 
     <button id="updateGraphs">Update graph
     </button>
-    <div id="project_results">
+
+    -->
+
+    <div id="tabs">
+    <ul>
+        <li><a href="#graphsOverTime">over time</a></li>
+        <li><a href="#graphsOverConcurrency">over concurrency</a></li>
+    </ul>
+
+    <div id="graphsOverTime">
         <div id="reqPerSecGraphTime"></div>
         <div id="responseTimeGraphTime"></div>
-        <div id="cpuUsageGraphTime"></div>
-        <div id="memoryUsageGraphTime"></div>
+    </div>
 
+    <div id="graphsOverConcurrency">
         <div id="reqPerSecGraphConcurrency"></div>
         <div id="responseTimeGraphConcurrency"></div>
-        <div id="cpuUsageGraphConcurrency"></div>
-        <div id="memoryUsageGraphConcurrency"></div>
+    </div>
     </div>
 
     <script>window.resultData = {results|s};</script>

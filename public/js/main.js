@@ -52,9 +52,6 @@ define(['graphclient', 'jquery', 'jqueryui', 'highcharts'],
                         $('.statOptions input,.statOptions button').prop('disabled', false);
                     },
                     error: function(jqXHR, textStatus, errorThrown) {
-                        console.log('jqxhr', jqXHR);
-                        console.log('textStats', textStatus);
-                        console.log('errorThrown', errorThrown);
                         window.alert('Could not create project:\n' + jqXHR.responseText);
                         $('.statOptions input,.statOptions button').prop('disabled', false);
                     }
@@ -64,12 +61,15 @@ define(['graphclient', 'jquery', 'jqueryui', 'highcharts'],
 
         function startTest() {
             var csrfToken = $('[name="_csrf"]').val();
+            var tryCount = 0;
+
             function pollingStatus() {
                 $.ajax({
                     url: '/get_status',
                     success: function(data) {
                         if (data && data.testRunning === true) {
-                            setTimeout(pollingStatus, 1000);
+                            tryCount ++;
+                            setTimeout(pollingStatus, tryCount < 10 ? 1000 : 10000);
                         } else {
                             // test is complete, enable the button
                             $('#startTest').attr('disabled', false);
@@ -77,7 +77,7 @@ define(['graphclient', 'jquery', 'jqueryui', 'highcharts'],
                     },
                     error: function(jqXHR) {
                         $('#startTest').attr('disabled', false);
-                        window.alert(jqXHR.responseText); 
+                        window.alert('error occurred:\n', jqXHR.responseText);
                     }
                 });
             }
@@ -97,7 +97,6 @@ define(['graphclient', 'jquery', 'jqueryui', 'highcharts'],
                         $('#startTest').attr('disabled', false);
                         console.log('test is complete');
                     }
-                    window.alert(data);
                 },
                 error: function(jqXHR) {
                     $('#startTest').attr('disable', false);
@@ -128,6 +127,11 @@ define(['graphclient', 'jquery', 'jqueryui', 'highcharts'],
         $('#create_project').click(createProjectListener);
         initializeDatepickers();
         $('#startTest').click(startTest);
+        $('#tabs').tabs({
+            hactivate: function() {
+                $(window).resize();
+            }
+        });
 
         graphClient.constructAllGraphs(window.resultData);
     });
