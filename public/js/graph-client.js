@@ -10,8 +10,6 @@ define([
     ],
     function(moment) {
 
-        console.log('moment is ', moment().format());
-
         function constructAllGraphs(data) {
             var dateFormat = 'MMM Do YYYY, h:mm:ss a';
 
@@ -19,6 +17,8 @@ define([
             console.log('original data', data);
             var showCPU, showMemory;
             var stepCount;
+
+            var graphWidth = $('#reqPerSecGraphTime').parent().width();
 
             function toFixed(num, decimal) {
                 if (!num) {
@@ -125,17 +125,36 @@ define([
                     var memoryData = [];
 
                     sample.steps.forEach(function(stepInfo) {
-                        reqPerSecData.push([stepInfo.concurrency, stepInfo.stats.requestsPerSecond.mean]);
-                        responseTimeData.push([stepInfo.concurrency, stepInfo.stats.responseTime.mean]);
+                        var concurrency = stepInfo.concurrency;
+                        if (concurrency in reqPerSecData) {
+                            reqPerSecData[concurrency] = (reqPerSecData[concurrency] +
+                                stepInfo.stats.requestsPerSecond.mean) / 2;
+                            responseTimeData[concurrency] = (responseTimeData[concurrency] +
+                                stepInfo.stats.responseTime.mean) / 2;
+                        } else {
+                            reqPerSecData[concurrency] = stepInfo.stats.requestsPerSecond.mean;
+                            responseTimeData[concurrency] = stepInfo.stats.responseTime.mean;
+                        }
+                        // reqPerSecData.push([stepInfo.concurrency, stepInfo.stats.requestsPerSecond.mean]);
+                        // responseTimeData.push([stepInfo.concurrency, stepInfo.stats.responseTime.mean]);
                     });
+
+                    var cpuDataArray = [];
+
 
                     reqPerSecSeries.push({
                         name: moment(sample.timestamp).format(dateFormat),
-                        data: reqPerSecData
+                        // data: reqPerSecData
+                        data: Object.keys(reqPerSecData).map(function(key) {
+                            return [key, reqPerSecData[key]]
+                        })
                     });
                     responseTimeSeries.push({
                         name: moment(sample.timestamp).format(dateFormat),
-                        data: responseTimeData
+                        // data: responseTimeData
+                        data: Object.keys(responseTimeData).map(function(key) {
+                            return [key, responseTimeData[key]]
+                        })
                     });
 
                     cpuSeries.push({
@@ -190,13 +209,12 @@ define([
             }
 
             function addReqPerSecGraphTime(data, timestamps) {
-                console.log('data', data);
-                console.log('time', timestamps);
 
                 $('#reqPerSecGraphTime').highcharts({
                     chart: {
                         type: 'spline',
-                        zoomType: 'xy'
+                        zoomType: 'xy',
+                        width: graphWidth
                     },
                     title: {
                         text: 'Requests per second over time'
@@ -227,13 +245,12 @@ define([
 
 
             function addResponseTimeGraphTime(data, timestamps) {
-                console.log('data', data);
-                console.log('time', timestamps);
 
                 $('#responseTimeGraphTime').highcharts({
                     chart: {
                         type: 'spline',
-                        zoomType: 'xy'
+                        zoomType: 'xy',
+                        width: graphWidth
                     },
                     title: {
                         text: 'Response time over time'
@@ -263,11 +280,11 @@ define([
             }
 
             function addReqPerSecGraphConcurrency(data) {
-                console.log('to graph', data);
                 $('#reqPerSecGraphConcurrency').highcharts({
                     chart: {
                         type: 'spline',
-                        zoomType: 'xy'
+                        zoomType: 'xy',
+                        width: graphWidth
                     },
                     title: {
                         text: 'Requests per second over concurrency'
@@ -287,17 +304,17 @@ define([
                     credits: {
                         enabled: false
                     },
-                    series: data,
+                    series: data
                 });
             }
 
 
             function addResponseTimeGraphConcurrency(data) {
-                console.log('resTime to graph', data);
                 $('#responseTimeGraphConcurrency').highcharts({
                     chart: {
                         type: 'spline',
-                        zoomType: 'xy'
+                        zoomType: 'xy',
+                        width: graphWidth
                     },
                     title: {
                         text: 'Requests per second over concurrency'
@@ -317,17 +334,15 @@ define([
                     credits: {
                         enabled: false
                     },
-                    series: data,
+                    series: data
                 });
             }
 
             if (!validateData(data)) {
-                console.log('bad data');
             } else {
                 var timeData = buildTimeSeries(data);
                 addAveragesToTimeData(timeData);
                 var concurrencyData = buildConcurrencySeries(data);
-                console.log('concurrencyData', concurrencyData);
                 $(function() {
                     // var concurrencyClasses = [];
 
