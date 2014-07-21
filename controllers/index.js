@@ -9,7 +9,8 @@ var PROJECT_COLNAME = 'projects';
 module.exports = function(router) {
 
     var testActive = false;
-    var childStreams;
+    var activeProject = '';
+    var childStreams = {};
 
     router.get('/', function(req, res) {
         dbmanager.getAllProjects(function(err, projects) {
@@ -23,7 +24,6 @@ module.exports = function(router) {
                     projects: projects,
                     testKey: 'hello there'
                 });
-                //res.json(result);
             }
         });
     });
@@ -51,7 +51,7 @@ module.exports = function(router) {
         console.log('I am here', newProject);
         if (newProject) {
             console.log('if true');
-            dbmanager.addToCollection(PROJECT_COLNAME, newProject, function(err, result) {
+            dbmanager.addToCollection(PROJECT_COLNAME, newProject, function(err) {
                 if (err) {
                     res.json(500, {
                         status: 'Error',
@@ -71,6 +71,13 @@ module.exports = function(router) {
                 message: 'Invalid request'
             });
         }
+    });
+
+    router.get('/get_status', function(req, res) {
+        res.json({
+            testRunning: testActive,
+            projectName: activeProject
+        });
     });
 
     router.get('/:name', function(req, res) {
@@ -113,15 +120,15 @@ module.exports = function(router) {
                 res.redirect('.');
             } else {
                 if (testActive) {
-                    res.json({
+                    res.json(503, {
                         status: 'Error',
                         message: 'Another test is already running'
                     });
                 } else {
                     testActive = true;
+                    activeProject = projectName;
                     childStreams = {
                         stdout: '',
-                        stdin: '',
                         stderr: ''
                     };
 
@@ -136,7 +143,7 @@ module.exports = function(router) {
 
                     child.on('message', function(result) {
                         console.log('child send results ', result);
-                        dbmanager.saveResult(result, projectName, function(err, dbres) {
+                        dbmanager.saveResult(result, projectName, function(err) {
                             if (err) {
                                 console.error('err occurred while saving res ', err);
                             } else {
@@ -148,6 +155,7 @@ module.exports = function(router) {
                     child.on('close', function(code) {
                         console.log('child exited with code ', code);
                         testActive = false;
+                        activeProject = '';
                         console.log('child stdout was ', childStreams.stdout);
                     });
 
