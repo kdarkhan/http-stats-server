@@ -227,7 +227,7 @@ define([
                         var averageArray = [];
                         var concurrencyCount = parameter.length;
                         var timeCount = parameter[0].data.length;
-                        if (timeCount > 1) {
+                        if (concurrencyCount > 1) {
                             for (var i = 0; i < timeCount; i++) {
                                 var sum = 0;
                                 for (var j = 0; j < concurrencyCount; j++) {
