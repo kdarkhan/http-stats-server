@@ -131,8 +131,12 @@ define([
                     if (i !== 0 && i !== concurrencyCount - 1) {
                         reqPerSecData[i].visible = false;
                         responseTimeData[i].visible = false;
-                        // cpuData[i].visible = false;
-                        // memoryData[i].visible = false;
+                        if (showCPU) {
+                            cpuData[i].visible = false;
+                        }
+                        if (showMemory) {
+                            memoryData[i].visible = false;
+                        }
                     }
                 }
                 var result = {
@@ -154,6 +158,7 @@ define([
                 var responseTimeSeries = [];
                 var cpuSeries = [];
                 var memorySeries = [];
+
 
                 array.forEach(function(sample) {
                     var reqPerSecData = [];
@@ -182,23 +187,25 @@ define([
                         name: moment(sample.timestamp).format(dateFormat),
                         // data: reqPerSecData
                         data: Object.keys(reqPerSecData).map(function(key) {
-                            return [key, reqPerSecData[key]];
+                            return [Number(key), reqPerSecData[key]];
                         })
                     });
                     responseTimeSeries.push({
                         name: moment(sample.timestamp).format(dateFormat),
                         // data: responseTimeData
                         data: Object.keys(responseTimeData).map(function(key) {
-                            return [key, responseTimeData[key]];
+                            return [Number(key), responseTimeData[key]];
                         })
                     });
 
                     cpuSeries.push({
                         name: sample.timestamp,
+                        // TODO
                         data: cpuData
                     });
                     memorySeries.push({
                         name: sample.timestamp,
+                        // TODO
                         data: memoryData
                     });
                 });
