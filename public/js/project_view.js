@@ -20,6 +20,22 @@ require.config({
 
 require(['graphclient', 'jquery', 'jqueryui'], function(graphClient) {
 
+    function addLatestResult() {
+        var errorMessage = 'Could not fetch the latest result. Refresh the page manually to update the graph';
+        $.ajax({
+            url: 'get_latest_result',
+            success: function(data) {
+                graphClient.addSinglePoint(data, function(err) {
+                    if (err) {
+                        window.alert(errorMessage);
+                    }
+                });
+            },
+            error: function(jqXHR) {
+                window.alert(errorMessage);
+            }
+        });
+    }
 
     function startTest() {
         var csrfToken = $('[name="_csrf"]').val();
@@ -36,6 +52,7 @@ require(['graphclient', 'jquery', 'jqueryui'], function(graphClient) {
                         setTimeout(pollingStatus, tryCount < 10 ? 1000 : 10000);
                     } else {
                         // test is complete, enable the button
+                        addLatestResult();
                         $('#currentStatus').text('');
                         $('#startTest').attr('disabled', false);
                     }

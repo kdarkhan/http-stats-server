@@ -82,6 +82,8 @@ module.exports = function(router) {
 
     router.get('/:name', function(req, res) {
         var projectName = req.params.name;
+        // service names use relative urls and
+        // they do not work without trailing slash at the end
         if (req.url.slice(-1) != '/') {
             res.redirect(projectName + '/');
         } else {
