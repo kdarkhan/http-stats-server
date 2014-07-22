@@ -56,6 +56,14 @@
             <option value="false" selected="selected">false</option>
         </select>
     </div>
+
+    <label>request parameters</label>
+        <div class="request parameters">
+        <label><input id="timeoutEnabled" type="checkbox" name>timeout</label>
+        <input id="timeout" type="number" value="10000" min="0" autocomplete="off">
+        <label>additional request parameters</label>
+        <textarea id="additionalParams">{}</textarea>
+    </div>
     <input type="hidden" name="_csrf" value="{_csrf}" />
     <div>
         <button id="create_project">
@@ -63,4 +71,7 @@
         </button>
     </div>
 </div>
+
+<script data-main="/js/app" src="/components/requirejs/require.js"></script>
+
 {/body}
