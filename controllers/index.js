@@ -66,7 +66,7 @@ module.exports = function(router) {
             });
         } else {
             console.log('if false');
-            res.json(400, {
+            res.json(500, {
                 status: 'Error',
                 message: 'Invalid request'
             });
@@ -82,34 +82,38 @@ module.exports = function(router) {
 
     router.get('/:name', function(req, res) {
         var projectName = req.params.name;
-        dbmanager.getProject(projectName, function(err, project) {
-            if (err) {
-                res.json(400, {
-                    status: 'Error',
-                    message: err.toString()
-                });
-            } else {
-                if (project) {
-                    // get projects
-                    dbmanager.getProjectResults(projectName, function(err, results) {
-                        if (err) {
-                            res.json(400, {
-                                status: 'Error',
-                                message: err.toString()
-                            });
-                        } else {
-                            res.render('project_view', {
-                                project: project,
-                                results: JSON.stringify(results)
-                            });
-                        }
+        if (req.url.slice(-1) != '/') {
+            res.redirect(projectName + '/');
+        } else {
+            dbmanager.getProject(projectName, function(err, project) {
+                if (err) {
+                    res.json(500, {
+                        status: 'Error',
+                        message: err.toString()
                     });
                 } else {
-                    console.log(typeof result);
-                    res.send('Project ' + projectName + ' does not exist');
+                    if (project) {
+                        // get projects
+                        dbmanager.getProjectResults(projectName, function(err, results) {
+                            if (err) {
+                                res.json(500, {
+                                    status: 'Error',
+                                    message: err.toString()
+                                });
+                            } else {
+                                res.render('project_view', {
+                                    project: project,
+                                    results: JSON.stringify(results)
+                                });
+                            }
+                        });
+                    } else {
+                        console.log(typeof result);
+                        res.send('Project ' + projectName + ' does not exist');
+                    }
                 }
-            }
-        });
+            });
+        }
     });
 
     router.post('/:name/start_test', function(req, res) {
@@ -176,5 +180,27 @@ module.exports = function(router) {
 
     router.get('/:name/get_logs', function(req, res) {
         res.json(childStreams);
+    });
+
+    router.get('/:name/get_latest_result', function(req, res) {
+        var projectName = req.params.name;
+        dbmanager.getLatestResult(projectName, function(err, result) {
+            if (err) {
+                res.json(500, err);
+            } else {
+                res.json(result);
+            }
+        });
+    });
+
+    router.get('/:name/raw', function(req, res) {
+        var projectName = req.params.name;
+        dbmanager.getProjectResults(projectName, function(err, results) {
+            if (err) {
+                res.json(500, err);
+            } else {
+                res.json(results);
+            }
+        });
     });
 };
