@@ -84,7 +84,7 @@ module.exports = function(router) {
         var projectName = req.params.name;
         // service names use relative urls and
         // they do not work without trailing slash at the end
-        if (req.url.slice(-1) != '/') {
+        if (req.url.slice(-1) !== '/') {
             res.redirect(projectName + '/');
         } else {
             dbmanager.getProject(projectName, function(err, project) {
@@ -202,6 +202,40 @@ module.exports = function(router) {
                 res.json(500, err);
             } else {
                 res.json(results);
+            }
+        });
+    });
+
+    router.post('/:name/clear_results', function(req, res) {
+        var projectName = req.params.name;
+        dbmanager.clearProjectResults(projectName, function(err) {
+            if (err) {
+                res.json(500, {
+                    status: 'Error',
+                    message: err
+                });
+            } else {
+                res.json({
+                    status: 'Success',
+                    message: 'Successfully cleared results'
+                });
+            }
+        });
+    });
+
+    router.delete('/:name', function(req, res) {
+        var projectName = req.params.name;
+        dbmanager.removeProject(projectName, function(err) {
+            if (err) {
+                res.json(500, {
+                    status: 'Error',
+                    message: err
+                });
+            } else {
+                res.json({
+                    status: 'Success',
+                    message: 'Successfuly removed the project ' + projectName
+                });
             }
         });
     });

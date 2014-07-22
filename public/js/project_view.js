@@ -37,6 +37,49 @@ require(['graphclient', 'jquery', 'jqueryui'], function(graphClient) {
         });
     }
 
+    function viewRaw() {
+        window.open('raw');
+    }
+
+    function clearResults() {
+        var csrfToken = $('[name="_csrf"]').val();
+        console.log('token is ', csrfToken);
+        $.ajax({
+            url: 'clear_results',
+            type: 'POST',
+            data: {
+                _csrf: csrfToken
+            },
+            success: function() {
+                $('#reqPerSecGraphTime').empty();
+                $('#responseTimeGraphTime').empty();
+                $('#reqPerSecGraphConcurrency').empty();
+                $('#responseTimeGraphConcurrency').empty();
+            },
+            error: function(jqXHR) {
+                window.alert('An error occurred:\n' + jqXHR.responseText);
+            }
+        });
+    }
+
+    function removeProject() {
+        var csrfToken = $('[name="_csrf"]').val();
+        $.ajax({
+            url: document.URL,
+            type: 'DELETE',
+            data: {
+                _csrf: csrfToken
+            },
+            success: function() {
+                window.location.replace(window.location.protocol + '//' +
+                    window.location.host);
+            },
+            error: function(jqXHR) {
+                window.alert('An error occurred:\n' + jqXHR.responseText); 
+            }
+        });
+    }
+
     function startTest() {
         var csrfToken = $('[name="_csrf"]').val();
         var tryCount = 0;
@@ -96,6 +139,9 @@ require(['graphclient', 'jquery', 'jqueryui'], function(graphClient) {
         initialize: function() {
             // initializeDatepickers();
             $('#startTest').click(startTest);
+            $('#viewRaw').click(viewRaw);
+            $('#clearResults').click(clearResults);
+            $('#removeProject').click(removeProject);
             $('#tabs').tabs({
                 hactivate: function() {
                     $(window).resize();

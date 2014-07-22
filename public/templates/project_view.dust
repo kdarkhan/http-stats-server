@@ -27,13 +27,12 @@
     <button id="startTest">
     Start a new test 
     </button>
-    <button onclick="viewRaw()">View raw results</button><br>
+    <button id="viewRaw">View raw results</button>
+    <button id="clearResults">Clear results</button>
+    <button id="removeProject">Remove project</button>
+
+    <br>
     <label id="currentStatus"></label>
-    <script>
-    function viewRaw() {
-        window.open('raw');
-    }
-    </script>
 
     <!--
     <div id="daterange"
