@@ -36,8 +36,8 @@ require(['jquery', 'bootstrap'], function() {
                 beginConcurrency: $('#beginConcurrency').val(),
                 peakConcurrency: $('#peakConcurrency').val(),
                 endConcurrency: $('#endConcurrency').val(),
-                concurrencyIncrement: $('#concurrencyInc').val(),
-                concurrencyDecrement: $('#concurrencyDec').val(),
+                concurrencyIncrement: $('#concurrencyIncrement').val(),
+                concurrencyDecrement: $('#concurrencyDecrement').val(),
                 stepRequests: $('#stepRequests').val(),
                 delay: $('#stepDelay').val(),
                 warmup: $('#warmupEnabled').val(),
@@ -79,7 +79,7 @@ require(['jquery', 'bootstrap'], function() {
                 data: userInput,
                 success: function(data) {
                     if (data && data.status === 'Success') {
-                        $('#current_projects ul').append('<li><a href="' + userInput.options.name + '/">' +
+                        $('#currentProjects ul').append('<li><a href="' + userInput.options.name + '/">' +
                             userInput.options.name + '</a>');
                     } else {
                         window.alert('Could not create project:\n' + JSON.stringify(data));
@@ -98,7 +98,7 @@ require(['jquery', 'bootstrap'], function() {
     var app = {
         initialize: function() {
             // Your code here
-            $('#create_project').click(createProjectListener);
+            $('#createProject').click(createProjectListener);
         }
     };
 

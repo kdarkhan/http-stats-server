@@ -2,8 +2,136 @@
 {>"layouts/master" /}
 
 {<body}
-    <h1>Current projects</h1>
-    <div id="current_projects">
+
+
+<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+  <li class=""><a href="#createProjectContent" data-toggle="tab">Create project</a></li>
+  <li class="active"><a href="#existingProjectsContent" data-toggle="tab">Existing projects</a></li>
+  <li class="disabled"><a>Coming soon...</a></li>
+</ul>
+<div id="myTabContent" class="tab-content">
+  <div class="tab-pane fade" id="createProjectContent">
+
+
+<div class="col-lg-7">
+        <form class="form-horizontal">
+  <fieldset>
+    <legend>http-stats options</legend>
+    <div class="form-group">
+      <label for="projectname" class="col-md-3 control-label">projectName</label>
+      <div class="col-lg-9">
+        <input type="text" class="form-control" id="projectName" placeholder="">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="url" class="col-md-3 control-label">URL</label>
+      <div class="col-lg-9">
+        <input type="text" class="form-control" id="url" placeholder="http://youserver.com">
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="beginConcurrency" class="col-md-3 control-label">beginConcurrency</label>
+      <div class="col-lg-9">
+        <input type="number" class="form-control" id="beginConcurrency" placeholder="1" value="1">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="peakConcurrency" class="col-md-3 control-label">peakConcurrency</label>
+      <div class="col-lg-9">
+        <input type="number" class="form-control" id="peakConcurrency" placeholder="1" value="1">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="endConcurrency" class="col-md-3 control-label">endConcurrency</label>
+      <div class="col-lg-9">
+        <input type="number" class="form-control" id="endConcurrency" placeholder="1" value="1">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="concurrencyIncrement" class="col-md-3 control-label">concurrencyIncrement</label>
+      <div class="col-lg-9">
+        <input type="number" class="form-control" id="concurrencyIncrement" placeholder="1" value="1">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="concurrencyDecrement" class="col-md-3 control-label">concurrencyDecrement</label>
+      <div class="col-lg-9">
+        <input type="number" class="form-control" id="concurrencyDecrement" placeholder="1" value="1">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="stepRequests" class="col-md-3 control-label">stepRequests</label>
+      <div class="col-lg-9">
+        <input type="number" class="form-control" id="stepRequests" placeholder="1" value="1">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="stepDelay" class="col-md-3 control-label">delay</label>
+      <div class="col-lg-9">
+        <input type="number" class="form-control" id="stepDelay" placeholder="0" value="0">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="timeout" class="col-md-3 control-label">timeout</label>
+      <div class="col-lg-9">
+        <input type="number" class="form-control" id="timeout" placeholder="10000" value="10000">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox"> enable
+          </label>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="requestOptions" class="col-md-3 control-label">requestOptions</label>
+      <div class="col-lg-9">
+        <textarea style="resize:vertical" class="form-control" rows="3" id="requestOptions" placeholder="{}"></textarea>
+        <span class="help-block">JSON string which will be used as option to httpRequest object. Leave empty for default behavior.</span>
+      </div>
+    </div>
+
+
+    <div class="form-group">
+      <label for="warmupEnabled" class="col-md-3 control-label">warmupEnabled</label>
+      <div class="col-lg-9">
+        <select class="form-control" id="warmupEnabled">
+          <option value="true">true</option>
+          <option value="false" selected="selected">false</option>
+        </select>
+      </div>
+    </div>
+
+    <input type="hidden" name="_csrf" value="{_csrf}" />
+
+    <div class="form-group">
+      <div class="col-lg-9 col-lg-offset-3">
+        <button id="createProject" type="button" class="btn btn-primary">Create</button>
+      </div>
+    </div>
+  </fieldset>
+</form>
+
+</div>
+
+
+
+
+  </div>
+  <div class="tab-pane fade active in" id="existingProjectsContent">
+
+    <div id="currentProjects">
     <ul>
     {#projects}
     <li><a href="{name}/">{name}</a></li>{~n}
@@ -11,66 +139,13 @@
     </ul>
     </div>
 
-    <h1>Create new project</h1>
-<div class="statOptions">
-    <div class="projectName">
-        <label>projectName</label>
-        <input id="projectName" type="text" name="projectName">
-    </div>
-    <div class="urlInput">
-        <label>URL</label>
-        <input id="url" type="text" name="url" value="http://localhost:8000">
-    </div>
-    <div class="concurrencyOption">
-        <label>beginConcurrency</label>
-        <input id="beginConcurrency" type="number" value="1" min="1" autocomplete="off">
-    </div>
-    <div class="concurrencyOption">
-        <label>peakConcurrency</label>
-        <input id="peakConcurrency" type="number" value="1" min="1" autocomplete="off">
-    </div>
-    <div class="concurrencyOption">
-        <label>endConcurrency</label>
-        <input id="endConcurrency" type="number" value="1" min="1" autocomplete="off">
-    </div>
-    <div class="concurrencyOption">
-        <label>concurrencyIncrement</label>
-        <input id="concurrencyInc" type="number" value="1" min="1" autocomplete="off">
-    </div>
-    <div class="concurrencyOption">
-        <label>concurrencyDecrement</label>
-        <input id="concurrencyDec" type="number" value="1" min="1" autocomplete="off">
-    </div>
-    <div class="stepRequests">
-        <label>stepRequests</label>
-        <input id="stepRequests" type="number" value="1" min="1" autocomplete="off">
-    </div>
-    <div class="stepDelay">
-        <label>delay</label>
-        <input id="stepDelay" type="number" value="0" min="0" autocomplete="off">
-    </div>
-    <div class="warmupEnabled">
-        <label>enable warmup</label>
-        <select id="warmupEnabled">
-            <option value="true">true</option>
-            <option value="false" selected="selected">false</option>
-        </select>
-    </div>
 
-    <label>request parameters</label>
-        <div class="request parameters">
-        <label><input id="timeoutEnabled" type="checkbox">timeout (ms)</label>
-        <input id="timeout" type="number" value="10000" min="0">
-        <label>additional request parameters</label>
-        <textarea id="requestOptions">{}</textarea>
-    </div>
-    <input type="hidden" name="_csrf" value="{_csrf}" />
-    <div>
-        <button id="create_project">
-            create project 
-        </button>
-    </div>
+  </div>
 </div>
+
+
+
+
 
 <script data-main="/js/app" src="/components/requirejs/require.js"></script>
 
