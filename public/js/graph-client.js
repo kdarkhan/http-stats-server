@@ -407,35 +407,41 @@ define([
 
         function addSinglePoint(data, callback) {
             data = [data];
-            if (validateData(data)) {
-                var timeData = buildTimeSeries(data);
-                var i;
-                addAveragesToTimeData(timeData);
 
-                // add reqPerSec points
-                var chart = $('#reqPerSecGraphTime').highcharts();
-                for(i = 0; i < timeData.reqPerSecData.length; i++) {
-                    chart.series[i].addPoint([timeData.timestamps[0], timeData.reqPerSecData[i].data[0]]);
+            if ($('#reqPerSecGraphTime').highcharts()) {
+
+                if (validateData(data)) {
+                    var timeData = buildTimeSeries(data);
+                    var i;
+                    addAveragesToTimeData(timeData);
+
+                    // add reqPerSec points
+                    var chart = $('#reqPerSecGraphTime').highcharts();
+                    for (i = 0; i < timeData.reqPerSecData.length; i++) {
+                        chart.series[i].addPoint([timeData.timestamps[0], timeData.reqPerSecData[i].data[0]]);
+                    }
+
+                    // add responseTime points
+                    chart = $('#responseTimeGraphTime').highcharts();
+                    for (i = 0; i < timeData.responseTimeData.length; i++) {
+                        chart.series[i].addPoint([timeData.timestamps[0], timeData.responseTimeData[i].data[0]]);
+                    }
+
+                    var concurrencyData = buildConcurrencySeries(data);
+                    // add reqPerSec points
+                    chart = $('#reqPerSecGraphConcurrency').highcharts();
+                    chart.addSeries(concurrencyData.reqPerSecSeries[0]);
+
+                    // add responseTime points
+                    chart = $('#responseTimeGraphConcurrency').highcharts();
+                    chart.addSeries(concurrencyData.responseTimeSeries[0]);
+
+                } else {
+                    console.log('validation failed');
+                    return callback(new Error('bad data'));
                 }
-
-                // add responseTime points
-                chart = $('#responseTimeGraphTime').highcharts();
-                for(i = 0; i < timeData.responseTimeData.length; i++) {
-                    chart.series[i].addPoint([timeData.timestamps[0], timeData.responseTimeData[i].data[0]]);
-                }
-
-                var concurrencyData = buildConcurrencySeries(data);
-                // add reqPerSec points
-                chart = $('#reqPerSecGraphConcurrency').highcharts();
-                chart.addSeries(concurrencyData.reqPerSecSeries[0]);
-
-                // add responseTime points
-                chart = $('#responseTimeGraphConcurrency').highcharts();
-                chart.addSeries(concurrencyData.responseTimeSeries[0]);
-
             } else {
-                console.log('validation failed');
-                return callback(new Error('bad data'));
+                constructAllGraphs(data);
             }
         }
 

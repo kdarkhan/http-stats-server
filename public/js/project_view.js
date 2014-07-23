@@ -51,10 +51,13 @@ require(['graphclient', 'jquery', 'jqueryui'], function(graphClient) {
                 _csrf: csrfToken
             },
             success: function() {
-                $('#reqPerSecGraphTime').empty();
-                $('#responseTimeGraphTime').empty();
-                $('#reqPerSecGraphConcurrency').empty();
-                $('#responseTimeGraphConcurrency').empty();
+                ['#reqPerSecGraphTime', '#responseTimeGraphTime', '#reqPerSecGraphConcurrency', '#responseTimeGraphConcurrency']
+                    .forEach(function(containerID) {
+                        var graph = $(containerID).highcharts();
+                        if (graph) {
+                            graph.destroy();
+                        }
+                    });
             },
             error: function(jqXHR) {
                 window.alert('An error occurred:\n' + jqXHR.responseText);
@@ -75,7 +78,7 @@ require(['graphclient', 'jquery', 'jqueryui'], function(graphClient) {
                     window.location.host);
             },
             error: function(jqXHR) {
-                window.alert('An error occurred:\n' + jqXHR.responseText); 
+                window.alert('An error occurred:\n' + jqXHR.responseText);
             }
         });
     }
