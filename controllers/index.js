@@ -40,9 +40,20 @@ module.exports = function(router) {
                 concurrencyDecrement: Number(options.concurrencyDecrement),
                 stepRequests: Number(options.stepRequests),
                 delay: Number(options.delay),
-                warmup: options.warmup
+                warmup: options.warmup,
             }
         };
+
+        var requestOptions;
+        try {
+            requestOptions = JSON.parse(options.requestOptions);
+        } catch(err) {
+            requestOptions = {};
+        }
+        result.httpStatsOptions.requestOptions = requestOptions;
+        if (options.requestTimeout) {
+            result.httpStatsOptions.requestTimeout = Number(requestTimeout);
+        }
         return result;
     }
 

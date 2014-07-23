@@ -20,6 +20,7 @@
         <li>delay: {delay}</li>
         <li>warmup: {warmup}</li>
     {/project.httpStatsOptions}
+    
     </ul>
     </div>
 

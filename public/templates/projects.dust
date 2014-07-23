@@ -59,10 +59,10 @@
 
     <label>request parameters</label>
         <div class="request parameters">
-        <label><input id="timeoutEnabled" type="checkbox" name>timeout</label>
-        <input id="timeout" type="number" value="10000" min="0" autocomplete="off">
+        <label><input id="timeoutEnabled" type="checkbox">timeout (ms)</label>
+        <input id="timeout" type="number" value="10000" min="0">
         <label>additional request parameters</label>
-        <textarea id="additionalParams">{}</textarea>
+        <textarea id="requestOptions">{}</textarea>
     </div>
     <input type="hidden" name="_csrf" value="{_csrf}" />
     <div>
