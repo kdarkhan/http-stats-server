@@ -5,63 +5,111 @@
 
 {<body}
 
-    <input type="hidden" name="_csrf" value="{_csrf}" />
-    <div id="project_options">
-    <h1>{project.name}</h1>
-    <ul>
-    {#project.httpStatsOptions} 
-        <li>url: {url}</li>
-        <li>beginConcurrency: {beginConcurrency}</li>
-        <li>peakConcurrency: {peakConcurrency}</li>
-        <li>endConcurrency: {endConcurrency}</li>
-        <li>concurrencyIncrement: {concurrencyIncrement}</li>
-        <li>concurrencyDecrement: {concurrencyDecrement}</li>
-        <li>stepRequests: {stepRequests}</li>
-        <li>delay: {delay}</li>
-        <li>warmup: {warmup}</li>
-    {/project.httpStatsOptions}
+
+<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+  <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
+  <li class=""><a href="#projectInfo" data-toggle="tab">{project.name}</a></li>
+  <li class="active"><a href="#projectResults" data-toggle="tab">Project results</a></li>
+</ul>
+
+
+<div id="myTabContent" class="tab-content">
     
-    </ul>
+    <div class="tab-pane fade" id="projectInfo">
+        <div class="col-md-4">
+            <div class="panel panel-info ">
+              <div class="panel-heading">Project options</div>
+
+              <table class="table table-hover">
+              {#project.httpStatsOptions}
+                <tr>
+                        <td>name</td>
+                        <td>{project.name}</td>
+                </tr>
+                <tr>
+                        <td>url</td>
+                        <td>{url}</td>
+                </tr>
+                <tr>
+                        <td>beginConcurrency</td>
+                        <td>{beginConcurrency}</td>
+                </tr>
+                <tr>
+                        <td>peakConcurrency</td>
+                        <td>{peakConcurrency}</td>
+                </tr>
+                <tr>
+                        <td>endConcurrency</td>
+                        <td>{endConcurrency}</td>
+                </tr>
+                <tr>
+                        <td>concurrencyIncrement</td>
+                        <td>{concurrencyIncrement}</td>
+                </tr>
+                <tr>
+                        <td>concurrencyDecrement</td>
+                        <td>{concurrencyDecrement}</td>
+                </tr>
+                <tr>
+                        <td>stepRequests</td>
+                        <td>{stepRequests}</td>
+                </tr>
+                <tr>
+                        <td>delay</td>
+                        <td>{delay}</td>
+                </tr>
+                <tr>
+                        <td>timeout</td>
+                        <td>{delay}</td>
+                </tr>
+                <tr>
+                        <td>requestOptions</td>
+                        <td>{requestOptions}</td>
+                </tr>
+                <tr>
+                        <td>warmupEnabled</td>
+                        <td>{warmup}</td>
+                </tr>
+                {/project.httpStatsOptions}
+              </table>
+            </div>
+
+        </div>
+        
     </div>
 
+        <div class="tab-pane fade active in" id="projectResults">
 
-    <button id="startTest">
-    Start a new test 
-    </button>
-    <button id="viewRaw">View raw results</button>
-    <button id="clearResults">Clear results</button>
-    <button id="removeProject">Remove project</button>
 
-    <br>
-    <label id="currentStatus"></label>
+            <button type="button" class="btn btn-success" id="startTest">
+            Start a new test 
+            </button>
+            <button type="button" class="btn btn-info" id="viewRaw">View raw results</button>
+            <button type="button" class="btn btn-warning" id="clearResults">Clear results</button>
+            <button type="button" class="btn btn-danger" id="removeProject">Remove project</button>
 
-    <!--
-    <div id="daterange"
-        <label>From</label>
-        <input type="text" class="datepicker" id="fromDatepicker">
-        <label>To</label>
-        <input type="text" class="datepicker" id="toDatepicker">
+            <label id="currentStatus"></label>
+
+
+
+            <div id="graphsOverTime">
+                <div id="reqPerSecGraphTime"></div>
+                <div id="responseTimeGraphTime"></div>
+            </div>
+
+            <div id="graphsOverConcurrency">
+                <div id="reqPerSecGraphConcurrency"></div>
+                <div id="responseTimeGraphConcurrency"></div>
+            </div>
+
     </div>
 
+</div> 
 
-    -->
+    <input type="hidden" name="_csrf" value="{_csrf}">
 
-    <div id="tabs">
-    <ul>
-        <li><a href="#graphsOverTime">over time</a></li>
-        <li><a href="#graphsOverConcurrency">over concurrency</a></li>
-    </ul>
 
-    <div id="graphsOverTime">
-        <div id="reqPerSecGraphTime"></div>
-        <div id="responseTimeGraphTime"></div>
-    </div>
 
-    <div id="graphsOverConcurrency">
-        <div id="reqPerSecGraphConcurrency"></div>
-        <div id="responseTimeGraphConcurrency"></div>
-    </div>
-    </div>
 
     <script>window.resultData = {results|s};</script>
     <script data-main="/js/project_view" src="/components/requirejs/require.js"></script>

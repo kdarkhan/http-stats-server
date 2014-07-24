@@ -352,7 +352,7 @@ define([
                     width: graphWidth
                 },
                 title: {
-                    text: 'Requests per second over concurrency'
+                    text: 'Response time over concurrency'
                 },
                 xAxis: {
                     allowDecimals: false,
@@ -362,7 +362,7 @@ define([
                 },
                 yAxis: {
                     title: {
-                        text: 'Requests per second'
+                        text: 'Resopnse time, ms'
                     },
                     min: 0
                 },
@@ -402,6 +402,7 @@ define([
                 });
             } else {
                 console.log('bad data');
+                $('#reqPerSecGraphTime').html('No results to display');
             }
         }
 

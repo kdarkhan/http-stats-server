@@ -7,18 +7,22 @@ require.config({
         jqueryui: '//code.jquery.com/ui/1.11.0/jquery-ui.min',
         moment: 'moment',
         hcoptions: 'hc-options',
-        graphclient: 'graph-client'
+        graphclient: 'graph-client',
+        bootstrap: 'bootstrap.min'
     },
     shim: {
         'highcharts': {
             'exports': 'Highcharts',
             'deps': ['jquery']
         },
+        'bootstrap': {
+            deps: ['jquery']
+        }
     }
 });
 
 
-require(['graphclient', 'jquery', 'jqueryui'], function(graphClient) {
+require(['graphclient', 'jquery', 'jqueryui', 'bootstrap'], function(graphClient) {
 
     function addLatestResult() {
         var errorMessage = 'Could not fetch the latest result. Refresh the page manually to update the graph';
@@ -42,45 +46,49 @@ require(['graphclient', 'jquery', 'jqueryui'], function(graphClient) {
     }
 
     function clearResults() {
-        var csrfToken = $('[name="_csrf"]').val();
-        console.log('token is ', csrfToken);
-        $.ajax({
-            url: 'clear_results',
-            type: 'POST',
-            data: {
-                _csrf: csrfToken
-            },
-            success: function() {
-                ['#reqPerSecGraphTime', '#responseTimeGraphTime', '#reqPerSecGraphConcurrency', '#responseTimeGraphConcurrency']
-                    .forEach(function(containerID) {
-                        var graph = $(containerID).highcharts();
-                        if (graph) {
-                            graph.destroy();
-                        }
-                    });
-            },
-            error: function(jqXHR) {
-                window.alert('An error occurred:\n' + jqXHR.responseText);
-            }
-        });
+        if (confirm('Are you sure you want to clear the results for the project?')) {
+            var csrfToken = $('[name="_csrf"]').val();
+            console.log('token is ', csrfToken);
+            $.ajax({
+                url: 'clear_results',
+                type: 'POST',
+                data: {
+                    _csrf: csrfToken
+                },
+                success: function() {
+                    ['#reqPerSecGraphTime', '#responseTimeGraphTime', '#reqPerSecGraphConcurrency', '#responseTimeGraphConcurrency']
+                        .forEach(function(containerID) {
+                            var graph = $(containerID).highcharts();
+                            if (graph) {
+                                graph.destroy();
+                            }
+                        });
+                },
+                error: function(jqXHR) {
+                    window.alert('An error occurred:\n' + jqXHR.responseText);
+                }
+            });
+        }
     }
 
     function removeProject() {
-        var csrfToken = $('[name="_csrf"]').val();
-        $.ajax({
-            url: document.URL,
-            type: 'DELETE',
-            data: {
-                _csrf: csrfToken
-            },
-            success: function() {
-                window.location.replace(window.location.protocol + '//' +
-                    window.location.host);
-            },
-            error: function(jqXHR) {
-                window.alert('An error occurred:\n' + jqXHR.responseText);
-            }
-        });
+        if (confirm('Are you sure you want to remove the project?')) {
+            var csrfToken = $('[name="_csrf"]').val();
+            $.ajax({
+                url: document.URL,
+                type: 'DELETE',
+                data: {
+                    _csrf: csrfToken
+                },
+                success: function() {
+                    window.location.replace(window.location.protocol + '//' +
+                        window.location.host);
+                },
+                error: function(jqXHR) {
+                    window.alert('An error occurred:\n' + jqXHR.responseText);
+                }
+            });
+        }
     }
 
     function startTest() {
