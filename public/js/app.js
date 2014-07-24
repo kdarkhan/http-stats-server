@@ -72,6 +72,10 @@ require(['jquery', 'bootstrap'], function() {
     }
 
 
+    function timeoutEnableListener() {
+        $('#timeout').prop('disabled', !this.checked);
+    }
+
     function createProjectListener() {
         console.log('create project clicked');
         var userInput = parseParameters();
@@ -107,6 +111,7 @@ require(['jquery', 'bootstrap'], function() {
         initialize: function() {
             // Your code here
             $('#createProject').click(createProjectListener);
+            $('#timeoutEnabled').change(timeoutEnableListener);
         }
     };
 
