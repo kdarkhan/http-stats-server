@@ -120,8 +120,10 @@
         <button id="createProject" type="button" class="btn btn-primary">Create</button>
       </div>
     </div>
-  </fieldset>
-</form>
+    </fieldset>
+    </form>
+
+    <div id="alertContainer" role="alert"></div>
 
 </div>
 

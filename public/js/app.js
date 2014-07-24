@@ -64,6 +64,13 @@ require(['jquery', 'bootstrap'], function() {
         return false;
     }
 
+    function showAlert(message, alertClass) {
+        $('#alertContainer').removeClass();
+        $('#alertContainer').addClass('alert ' + alertClass);
+        $('#alertContainer').html(message);
+        document.getElementById('alertContainer').scrollIntoView();
+    }
+
 
     function createProjectListener() {
         console.log('create project clicked');
@@ -81,13 +88,14 @@ require(['jquery', 'bootstrap'], function() {
                     if (data && data.status === 'Success') {
                         $('#currentProjects tbody').append('<tr><td></td><td><a href="' + userInput.options.name + '/">' +
                             userInput.options.name + '</a>' + '</td><td>Now</td>');
+                        showAlert('Created successfully', 'alert-success');
                     } else {
-                        window.alert('Could not create project:\n' + JSON.stringify(data));
+                        showAlert('Failed to create project:\n' + JSON.stringify(data), 'alert-danger');
                     }
                     $('.statOptions input,.statOptions button').prop('disabled', false);
                 },
                 error: function(jqXHR) {
-                    window.alert('Could not create project:\n' + jqXHR.responseText);
+                    showAlert('Failed to create project:\n' + JSON.stringify(jqXHR.responseText || jqXHR), 'alert-danger');
                     $('.statOptions input,.statOptions button').prop('disabled', false);
                 }
             });
