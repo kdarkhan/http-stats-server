@@ -20,6 +20,9 @@ module.exports = function(router) {
                     message: err.toString()
                 });
             } else {
+                projects.forEach(function(project) {
+                    project.creationTime = project._id.getTimestamp()
+                });
                 res.render('projects', {
                     projects: projects,
                     testKey: 'hello there'

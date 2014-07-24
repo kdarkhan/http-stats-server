@@ -79,8 +79,8 @@ require(['jquery', 'bootstrap'], function() {
                 data: userInput,
                 success: function(data) {
                     if (data && data.status === 'Success') {
-                        $('#currentProjects ul').append('<li><a href="' + userInput.options.name + '/">' +
-                            userInput.options.name + '</a>');
+                        $('#currentProjects tbody').append('<tr><td></td><td><a href="' + userInput.options.name + '/">' +
+                            userInput.options.name + '</a>' + '</td><td>Now</td>');
                     } else {
                         window.alert('Could not create project:\n' + JSON.stringify(data));
                     }
