@@ -77,7 +77,6 @@ require(['jquery', 'bootstrap'], function() {
     }
 
     function createProjectListener() {
-        console.log('create project clicked');
         var userInput = parseParameters();
         console.log(userInput);
 
@@ -89,10 +88,19 @@ require(['jquery', 'bootstrap'], function() {
                 type: 'POST',
                 data: userInput,
                 success: function(data) {
+                    console.log(data);
                     if (data && data.status === 'Success') {
+                        var projectInfo = data.data;
+                        var message = 'Successfully created ';
+                        if (projectInfo) {
+                            message += '<a class="alert-link" href="' + projectInfo.name + '">' + projectInfo.name + '</a>.'
+                        } else {
+                            message += 'project.';
+                        }
+                        showAlert(message, 'alert-success');
+                        projectInfo = projectInfo || {};
                         $('#currentProjects tbody').append('<tr><td></td><td><a href="' + userInput.options.name + '/">' +
-                            userInput.options.name + '</a>' + '</td><td>Now</td>');
-                        showAlert('Created successfully', 'alert-success');
+                            userInput.options.name + '</a>' + '</td><td>' + (projectInfo.timestamp || 'Now') + '</td>');
                     } else {
                         showAlert('Failed to create project:\n' + JSON.stringify(data), 'alert-danger');
                     }

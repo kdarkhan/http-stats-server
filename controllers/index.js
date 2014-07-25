@@ -23,7 +23,7 @@ module.exports = function(router) {
                 projects.forEach(function(project) {
                     project.creationTime = project._id.getTimestamp()
                 });
-                res.render('projects', {
+                res.render('projects_test', {
                     projects: projects,
                     testKey: 'hello there'
                 });
@@ -65,16 +65,21 @@ module.exports = function(router) {
         console.log('I am here', newProject);
         if (newProject) {
             console.log('if true');
-            dbmanager.addToCollection(PROJECT_COLNAME, newProject, function(err) {
+            dbmanager.addToCollection(PROJECT_COLNAME, newProject, function(err, result) {
                 if (err) {
                     res.json(500, {
                         status: 'Error',
                         message: err.toString()
                     });
                 } else {
+                    var project = result[0];
                     res.json({
                         status: 'Success',
-                        message: 'Successfully added to collection'
+                        message: 'Successfully added to collection',
+                        data: {
+                            name: project.name,
+                            timestamp: project._id.getTimestamp()
+                        }
                     });
                 }
             });
