@@ -5,19 +5,24 @@
 
 {<body}
 
-
-<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+<div class="row">
+<div class="col-md-8 col-md-offset-2">
+<ul class="nav nav-tabs nav-justified" style="margin-bottom: 15px;">
   <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
-  <li class=""><a href="#projectInfo" data-toggle="tab">{project.name}</a></li>
   <li class="active"><a href="#projectResults" data-toggle="tab">Project results</a></li>
+  <li class=""><a href="#projectInfo" data-toggle="tab">Project info</a></li>
 </ul>
 
+</div>
+</div>
 
+
+<div class="row">
 <div id="myTabContent" class="tab-content">
     
     <div class="tab-pane fade" id="projectInfo">
-        <div class="col-md-4">
-            <div class="panel panel-info ">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="panel panel-success ">
               <div class="panel-heading">Project options</div>
 
               <table class="table table-hover">
@@ -70,6 +75,11 @@
                         <td>warmupEnabled</td>
                         <td>{warmup}</td>
                 </tr>
+
+                <tr>
+                        <td>launchServer</td>
+                        <td>{spawn}</td>
+                </tr>
                 {/project.httpStatsOptions}
               </table>
             </div>
@@ -80,13 +90,17 @@
 
         <div class="tab-pane fade active in" id="projectResults">
 
-
+            <div class="col-md-8 col-md-offset-2">
+            <div class="text-center">
+            <div class="btn-group">
             <button type="button" class="btn btn-success" id="startTest">
             Start a new test 
             </button>
             <button type="button" class="btn btn-info" id="viewRaw">View raw results</button>
             <button type="button" class="btn btn-warning" id="clearResults">Clear results</button>
             <button type="button" class="btn btn-danger" id="removeProject">Remove project</button>
+            </div>
+            </div>
 
             <label id="currentStatus"></label>
 
@@ -95,16 +109,23 @@
             <div id="graphsOverTime">
                 <div id="reqPerSecGraphTime"></div>
                 <div id="responseTimeGraphTime"></div>
+                <div id="cpuGraphTime"></div>
+                <div id="memoryGraphTime"></div>
             </div>
 
             <div id="graphsOverConcurrency">
                 <div id="reqPerSecGraphConcurrency"></div>
                 <div id="responseTimeGraphConcurrency"></div>
+                <div id="cpuGraphConcurrency"></div>
+                <div id="memoryGraphConcurrency"></div>
             </div>
 
     </div>
 
 </div> 
+
+</div>
+
 
     <input type="hidden" name="_csrf" value="{_csrf}">
 

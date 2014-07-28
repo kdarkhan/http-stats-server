@@ -1,6 +1,6 @@
 'use strict';
 
-
+// TODO: make CPU and MEMORY data work on multithreaded apps
 
 define([
         'moment',
@@ -60,7 +60,7 @@ define([
 
                 for (var j = 0; j < steps.length; j++) {
                     var stats = steps[j].stats;
-                    var usage = stats.usage;
+                    var usage = stats.usage && stats.usage[0];
                     var concurrency = steps[j].concurrency;
                     if (!(concurrency in sampleReqPerSecData)) {
                         sampleReqPerSecData[concurrency] = toFixed(stats.requestsPerSecond.mean, 2);
@@ -103,6 +103,26 @@ define([
                     }
                 });
             }
+            var result = {
+                reqPerSecData: reqPerSecData,
+                responseTimeData: responseTimeData
+            };
+            if (showCPU) {
+                result.cpuData = cpuData;
+            }
+            if (showMemory) {
+                result.memoryData = memoryData;
+            }
+
+            Object.keys(result).forEach(function(array) {
+                result[array] = Object.keys(result[array]).map(function(concurrency) {
+                    return {
+                        name: concurrency,
+                        data: result[array][concurrency]
+                    };
+                });
+            });
+            /*
             reqPerSecData = Object.keys(reqPerSecData).map(function(concurrency) {
                 return {
                     name: concurrency,
@@ -116,20 +136,36 @@ define([
                 };
             });
 
+            cpuData = Object.keys(cpuData).map(function(concurrency) {
+                return {
+                    name: concurrency,
+                    data: cpuData[concurrency]
+                };
+            });
+
+            memoryData = Object.keys(memoryData).map(function(concurrency) {
+                return {
+                    name: concurrency,
+                    data: memoryData[concurrency]
+                };
+            });
+*/
             // disable all series except first and last
-            var concurrencyCount = reqPerSecData.length;
+            var concurrencyCount = result.reqPerSecData.length;
             for (i = 0; i < concurrencyCount; i++) {
                 if (i !== 0 && i !== concurrencyCount - 1) {
-                    reqPerSecData[i].visible = false;
-                    responseTimeData[i].visible = false;
+                    result.reqPerSecData[i].visible = false;
+                    result.responseTimeData[i].visible = false;
                     if (showCPU) {
-                        cpuData[i].visible = false;
+                        result.cpuData[i].visible = false;
                     }
                     if (showMemory) {
-                        memoryData[i].visible = false;
+                        result.memoryData[i].visible = false;
                     }
                 }
             }
+            result.timestamps = timestamps;
+            /*
             var result = {
                 reqPerSecData: reqPerSecData,
                 responseTimeData: responseTimeData,
@@ -141,6 +177,7 @@ define([
             if (showMemory) {
                 result.memoryData = memoryData;
             }
+            */
             return result;
         }
 
@@ -150,6 +187,8 @@ define([
             var responseTimeSeries = [];
             var cpuSeries = [];
             var memorySeries = [];
+            var cpuAvailable = array && array[0] && array[0].cpuAvailable;
+            var memoryAvailable = array && array[0] && array[0].memoryAvailable;
 
 
             array.forEach(function(sample) {
@@ -161,17 +200,30 @@ define([
 
                 sample.steps.forEach(function(stepInfo) {
                     var concurrency = stepInfo.concurrency;
+                    var usage = stepInfo.stats.usage && stepInfo.stats.usage[0];
                     if (concurrency in reqPerSecData) {
                         reqPerSecData[concurrency] = (reqPerSecData[concurrency] +
                             stepInfo.stats.requestsPerSecond.mean) / 2;
                         responseTimeData[concurrency] = (responseTimeData[concurrency] +
                             stepInfo.stats.responseTime.mean) / 2;
+                        if (cpuAvailable) {
+                            cpuData[concurrency] = (cpuData[concurrency] +
+                                usage.cpu.mean) / 2;
+                        }
+                        if (memoryAvailable) {
+                            memoryData[concurrency] = (memoryData[concurrency] +
+                                usage.memory.mean) / 2;
+                        }
                     } else {
                         reqPerSecData[concurrency] = stepInfo.stats.requestsPerSecond.mean;
                         responseTimeData[concurrency] = stepInfo.stats.responseTime.mean;
+                        if (cpuAvailable) {
+                            cpuData[concurrency] = usage.cpu.mean;
+                        }
+                        if (memoryAvailable) {
+                            memoryData[concurrency] = usage.memory.mean;
+                        }
                     }
-                    // reqPerSecData.push([stepInfo.concurrency, stepInfo.stats.requestsPerSecond.mean]);
-                    // responseTimeData.push([stepInfo.concurrency, stepInfo.stats.responseTime.mean]);
                 });
 
 
@@ -191,14 +243,18 @@ define([
                 });
 
                 cpuSeries.push({
-                    name: sample.timestamp,
+                    name: moment(sample.timestamp).format(dateFormat),
                     // TODO
-                    data: cpuData
+                    data: Object.keys(cpuData).map(function(key) {
+                        return [Number(key), cpuData[key]];
+                    })
                 });
                 memorySeries.push({
-                    name: sample.timestamp,
+                    name: moment(sample.timestamp).format(dateFormat),
                     // TODO
-                    data: memoryData
+                    data: Object.keys(memoryData).map(function(key) {
+                        return [Number(key), memoryData[key]];
+                    })
                 });
             });
 
@@ -209,13 +265,14 @@ define([
                 reqPerSecSeries[i].visible = false;
                 responseTimeSeries[i].visible = false;
                 cpuSeries[i].visible = false;
+                memorySeries[i].visible = false;
             }
 
             return {
                 reqPerSecSeries: reqPerSecSeries,
                 responseTimeSeries: responseTimeSeries,
-                cpuSeries: cpuSeries,
-                memorySeries: memorySeries
+                cpuSeries: cpuAvailable ? cpuSeries : undefined,
+                memorySeries: memoryAvailable ? memorySeries : undefined
             };
         }
 
@@ -314,6 +371,77 @@ define([
             });
         }
 
+        function addCpuGraphTime(data, timestamps) {
+            if (data) {
+                $('#cpuGraphTime').highcharts({
+                    chart: {
+                        type: 'spline',
+                        zoomType: 'xy',
+                        width: graphWidth
+                    },
+                    title: {
+                        text: 'CPU usage over time'
+                    },
+                    xAxis: {
+                        dateTimeLabelFormats: { // don't display the dummy year
+                            month: '%e. %b',
+                            year: '%b'
+                        },
+                        title: {
+                            text: 'timestamp'
+                        },
+                        categories: timestamps
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'cpu usage, %'
+                        },
+                        min: 0
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: data
+                });
+            }
+        }
+
+        function addMemoryGraphTime(data, timestamps) {
+            if (data) {
+                $('#memoryGraphTime').highcharts({
+                    chart: {
+                        type: 'spline',
+                        zoomType: 'xy',
+                        width: graphWidth
+                    },
+                    title: {
+                        text: 'Memory usage over time'
+                    },
+                    xAxis: {
+                        dateTimeLabelFormats: { // don't display the dummy year
+                            month: '%e. %b',
+                            year: '%b'
+                        },
+                        title: {
+                            text: 'timestamp'
+                        },
+                        categories: timestamps
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Memory usage, MB'
+                        },
+                        min: 0
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: data
+                });
+            }
+        }
+
+
         function addReqPerSecGraphConcurrency(data) {
             $('#reqPerSecGraphConcurrency').highcharts({
                 chart: {
@@ -362,7 +490,7 @@ define([
                 },
                 yAxis: {
                     title: {
-                        text: 'Resopnse time, ms'
+                        text: 'Response time, ms'
                     },
                     min: 0
                 },
@@ -371,6 +499,69 @@ define([
                 },
                 series: data
             });
+        }
+
+
+        function addCpuGraphConcurrency(data) {
+            if (data) {
+                $('#cpuGraphConcurrency').highcharts({
+                    chart: {
+                        type: 'spline',
+                        zoomType: 'xy',
+                        width: graphWidth
+                    },
+                    title: {
+                        text: 'CPU usage over concurrency'
+                    },
+                    xAxis: {
+                        allowDecimals: false,
+                        title: {
+                            text: 'Concurrency'
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'CPU usage, %'
+                        },
+                        min: 0
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: data
+                });
+            }
+        }
+
+        function addMemoryGraphConcurrency(data) {
+            if (data) {
+                $('#memoryGraphConcurrency').highcharts({
+                    chart: {
+                        type: 'spline',
+                        zoomType: 'xy',
+                        width: graphWidth
+                    },
+                    title: {
+                        text: 'Memory usage over concurrency'
+                    },
+                    xAxis: {
+                        allowDecimals: false,
+                        title: {
+                            text: 'Concurrency'
+                        }
+                    },
+                    yAxis: {
+                        title: {
+                            text: 'Memory usage, MB'
+                        },
+                        min: 0
+                    },
+                    credits: {
+                        enabled: false
+                    },
+                    series: data
+                });
+            }
         }
 
         function constructAllGraphs(data) {
@@ -382,7 +573,6 @@ define([
 
             if (validateData(data)) {
                 var timeData = buildTimeSeries(data);
-                console.log('major timedata', timeData);
                 addAveragesToTimeData(timeData);
                 var concurrencyData = buildConcurrencySeries(data);
                 $(function() {
@@ -397,8 +587,13 @@ define([
 
                     addReqPerSecGraphTime(timeData.reqPerSecData, timeData.timestamps);
                     addResponseTimeGraphTime(timeData.responseTimeData, timeData.timestamps);
+                    addCpuGraphTime(timeData.cpuData, timeData.timestamps);
+                    addMemoryGraphTime(timeData.memoryData, timeData.timestamps);
+
                     addReqPerSecGraphConcurrency(concurrencyData.reqPerSecSeries);
                     addResponseTimeGraphConcurrency(concurrencyData.responseTimeSeries);
+                    addCpuGraphConcurrency(concurrencyData.cpuSeries);
+                    addMemoryGraphConcurrency(concurrencyData.memorySeries);
                 });
             } else {
                 console.log('bad data');
@@ -408,13 +603,17 @@ define([
 
         function addSinglePoint(data, callback) {
             data = [data];
+            var cpuAvailable = data[0].cpuAvailable;
+            var memoryAvailable = data[0].memoryAvailable;
 
+            // assuming all graphs exist if one graph exists
             if ($('#reqPerSecGraphTime').highcharts()) {
 
                 if (validateData(data)) {
                     var timeData = buildTimeSeries(data);
                     var i;
                     addAveragesToTimeData(timeData);
+                    console.log('single point data', timeData);
 
                     // add reqPerSec points
                     var chart = $('#reqPerSecGraphTime').highcharts();
@@ -429,6 +628,29 @@ define([
                     }
 
                     var concurrencyData = buildConcurrencySeries(data);
+
+                    // add cpu points
+                    if (cpuAvailable) {
+                        chart = $('#cpuGraphTime').highcharts();
+                        for (i = 0; i < timeData.cpuData.length; i++) {
+                            chart.series[i].addPoint([timeData.timestamps[0], timeData.cpuData[i].data[0]]);
+                        }
+
+                        chart = $('#cpuGraphConcurrency').highcharts();
+                        chart.addSeries(concurrencyData.cpuSeries[0]);
+                    }
+
+                    // add memory points
+                    if (memoryAvailable) {
+                        chart = $('#memoryGraphTime').highcharts();
+                        for (i = 0; i < timeData.cpuData.length; i++) {
+                            chart.series[i].addPoint([timeData.timestamps[0], timeData.memoryData[i].data[0]]);
+                        }
+
+                        chart = $('#memoryGraphConcurrency').highcharts();
+                        chart.addSeries(concurrencyData.memorySeries[0]);
+                    }
+
                     // add reqPerSec points
                     chart = $('#reqPerSecGraphConcurrency').highcharts();
                     chart.addSeries(concurrencyData.reqPerSecSeries[0]);
