@@ -21,9 +21,6 @@ nconf.argv()
 
 dbmanager.connect({
         connectUri: nconf.get('mongodb:connectionUri')
-    },
-    function(err, res) {
-        console.log('done');
     });
 
 app.use(kraken(options));
