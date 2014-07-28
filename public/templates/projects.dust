@@ -97,7 +97,6 @@
             <input type="checkbox" id="timeoutEnabled">
           </span>
         </div>
-
       </div>
     </div>
 
@@ -118,6 +117,18 @@
           <option value="true">true</option>
           <option value="false" selected="selected">false</option>
         </select>
+      </div>
+    </div>
+
+    <div class="row top-buffer">
+      <label for="launchServer" class="col-md-3 control-label">launchServer</label>
+      <div class="col-md-6">
+        <div class="input-group ">
+          <input type="text" class="form-control input-sm" id="launchServer" disabled>
+          <span class="input-group-addon">
+            <input type="checkbox" id="launchServerEnabled">
+          </span>
+        </div>
       </div>
     </div>
 

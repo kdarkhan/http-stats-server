@@ -23,7 +23,7 @@ module.exports = function(router) {
                 projects.forEach(function(project) {
                     project.creationTime = project._id.getTimestamp()
                 });
-                res.render('projects_test', {
+                res.render('projects', {
                     projects: projects,
                     testKey: 'hello there'
                 });
@@ -44,6 +44,7 @@ module.exports = function(router) {
                 stepRequests: Number(options.stepRequests),
                 delay: Number(options.delay),
                 warmup: options.warmup,
+                spawn: options.spawn
             }
         };
 

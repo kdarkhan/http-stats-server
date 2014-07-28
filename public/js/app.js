@@ -28,6 +28,22 @@ require(['jquery', 'bootstrap'], function() {
         if ($('#timeoutEnabled').prop('checked')) {
             timeout = Number($('#timeout').val());
         }
+        var spawn;
+        if ($('#launchServerEnabled').prop('checked')) {
+            spawn = $('#launchServer').val();
+            console.log('spawn ', spawn);
+            console.log(typeof spawn);
+            var parsedSpawn;
+            try {
+                parsedSpawn = JSON.parse(spawn);
+                if (!Array.isArray(parsedSpawn)) {
+                    throw new Error('bad spawn args');
+                }
+            } catch(err) {
+                parsedSpawn = spawn.split(' ');
+            }
+            console.log('spawn is ', parsedSpawn);
+        }
         return {
             _csrf: $('[name="_csrf"]').val(),
             options: {
@@ -42,7 +58,8 @@ require(['jquery', 'bootstrap'], function() {
                 delay: $('#stepDelay').val(),
                 warmup: $('#warmupEnabled').val(),
                 requestOptions: $.trim($('#requestOptions').val() || '{}'),
-                requestTimeout: timeout
+                requestTimeout: timeout,
+                spawn: parsedSpawn
             }
         };
     }
@@ -76,6 +93,10 @@ require(['jquery', 'bootstrap'], function() {
         $('#timeout').prop('disabled', !this.checked);
     }
 
+    function launchServerEnableListener() {
+        $('#launchServer').prop('disabled', !this.checked);
+    }
+
     function createProjectListener() {
         var userInput = parseParameters();
         console.log(userInput);
@@ -93,7 +114,7 @@ require(['jquery', 'bootstrap'], function() {
                         var projectInfo = data.data;
                         var message = 'Successfully created ';
                         if (projectInfo) {
-                            message += '<a class="alert-link" href="' + projectInfo.name + '">' + projectInfo.name + '</a>.'
+                            message += '<a class="alert-link" href="' + projectInfo.name + '">' + projectInfo.name + '</a>.';
                         } else {
                             message += 'project.';
                         }
@@ -120,6 +141,7 @@ require(['jquery', 'bootstrap'], function() {
             // Your code here
             $('#createProject').click(createProjectListener);
             $('#timeoutEnabled').change(timeoutEnableListener);
+            $('#launchServerEnabled').change(launchServerEnableListener);
         }
     };
 
