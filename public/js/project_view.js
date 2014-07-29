@@ -45,6 +45,17 @@ require(['graphclient', 'jquery', 'jqueryui', 'bootstrap'], function(graphClient
         window.open('raw');
     }
 
+    function addAlert(alertType, message) {
+        var afterID = '#buttons';
+        var alertID = 'alertMessage';
+        var content = '<div id="' + alertID + '" class="alert ' +  alertType + ' alert-dismissible" role="alert"> <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' + message + ' </div>';
+        // remove old success and warning alerts
+        // keeping error alerts in html
+
+        $('#' + alertID + '.alert-warning, #' + alertID + '.alert-success').remove();
+        $(afterID).after(content);
+    }
+
     function clearResults() {
         if (confirm('Are you sure you want to clear the results for the project?')) {
             var csrfToken = $('[name="_csrf"]').val();
@@ -101,16 +112,16 @@ require(['graphclient', 'jquery', 'jqueryui', 'bootstrap'], function(graphClient
                 success: function(data) {
                     if (data && data.status === 'running') {
                         tryCount++;
-                        $('#currentStatus').text('test is running');
+                        addAlert('alert-warning', 'test is running');
                         // poll every 1 sec 10 times, then poll every 10 sec
                         setTimeout(pollingStatus, tryCount < 10 ? 1000 : 10000);
                     } else {
                         if (data && data.status === 'success') {
                             // test is successful, add the result
                             addLatestResult();
-                            $('#currentStatus').text('Test successfully completed');
+                            addAlert('alert-success', 'Test successfully completed');
                         } else {
-                            $('#currentStatus').text('Test failed');
+                            addAlert('alert-danger', 'Test failed');
                         }
                         // test is complete, enable the button
                         $('#startTest').attr('disabled', false);
