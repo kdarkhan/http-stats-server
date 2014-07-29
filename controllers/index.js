@@ -21,7 +21,7 @@ module.exports = function(router) {
                 });
             } else {
                 projects.forEach(function(project) {
-                    project.creationTime = project._id.getTimestamp()
+                    project.creationTime = project._id.getTimestamp();
                 });
                 res.render('projects', {
                     projects: projects,
@@ -51,12 +51,12 @@ module.exports = function(router) {
         var requestOptions;
         try {
             requestOptions = JSON.parse(options.requestOptions);
-        } catch(err) {
+        } catch (err) {
             requestOptions = {};
         }
         result.httpStatsOptions.requestOptions = requestOptions;
         if (options.requestTimeout) {
-            result.httpStatsOptions.requestTimeout = Number(requestTimeout);
+            result.httpStatsOptions.requestTimeout = Number(options.requestTimeout);
         }
         return result;
     }
@@ -65,7 +65,7 @@ module.exports = function(router) {
         var newProject = parseProject(req.body.options);
         console.log('I am here', newProject);
         if (newProject) {
-            console.log('if true');
+            newProject.lastTestResult = 'success';
             dbmanager.addToCollection(PROJECT_COLNAME, newProject, function(err, result) {
                 if (err) {
                     res.json(500, {
@@ -97,6 +97,21 @@ module.exports = function(router) {
         res.json({
             testRunning: testActive,
             projectName: activeProject
+        });
+    });
+
+    router.get('/:name/get_status', function(req, res) {
+        var projectName = req.params.name;
+        dbmanager.getLastStatus(projectName, function(err, result) {
+            if (err) {
+                res.json(503, {
+                    status: err
+                });
+            } else {
+                res.json({
+                    status: result
+                });
+            }
         });
     });
 
@@ -145,56 +160,77 @@ module.exports = function(router) {
                 // redirect to current project without start_test
                 res.redirect('.');
             } else {
-                if (testActive) {
+                if (testActive || project.lastTestResult === 'running') {
                     res.json(503, {
                         status: 'Error',
                         message: 'Another test is already running'
                     });
                 } else {
                     testActive = true;
-                    activeProject = projectName;
-                    childStreams = {
-                        stdout: '',
-                        stderr: ''
-                    };
+                    dbmanager.setLastStatus(projectName, 'running', function(err) {
+                        if (err) {
+                            console.log('err happened');
+                            res.json(503, {
+                                status: 'Error',
+                                message: err.toString()
+                            });
+                        } else {
+                            console.log('dude here');
+                            activeProject = projectName;
+                            childStreams = {
+                                stdout: '',
+                                stderr: ''
+                            };
 
-                    var childPath = path.resolve(__dirname, '../lib/child.js');
-                    console.log('child path is ', childPath);
+                            var childPath = path.resolve(__dirname, '../lib/child.js');
+                            console.log('child path is ', childPath);
 
-                    var child = childProcess.fork(childPath, {
-                        silent: true
+                            var child = childProcess.fork(childPath, {
+                                silent: true
+                            });
+
+                            child.send(project.httpStatsOptions);
+
+                            child.on('message', function(result) {
+                                console.log('child send results ', result);
+                                dbmanager.saveResult(result, projectName, function(err) {
+                                    if (err) {
+                                        console.error('err occurred while saving res ', err);
+                                    } else {
+                                        console.log('successfully wrote to server');
+                                    }
+                                });
+                            });
+
+                            child.on('close', function(code) {
+                                console.log('child exited with code ', code);
+                                testActive = false;
+                                dbmanager.setLastStatus(projectName, code === 0 ? 'success' : 'error',
+                                    function(err) {
+                                        if (err) {
+                                            console.error(err);
+                                        }
+                                    });
+                                activeProject = '';
+                                console.log('child stdout was ', childStreams.stdout);
+                            });
+
+                            Object.keys(childStreams).forEach(function(stream) {
+                                child[stream].on('data', function(chunk) {
+                                    childStreams[stream] += chunk;
+                                });
+                            });
+
+                            res.json({
+                                status: 'Success',
+                                message: 'Test has started'
+                            });
+                        }
                     });
 
-                    child.send(project.httpStatsOptions);
 
-                    child.on('message', function(result) {
-                        console.log('child send results ', result);
-                        dbmanager.saveResult(result, projectName, function(err) {
-                            if (err) {
-                                console.error('err occurred while saving res ', err);
-                            } else {
-                                console.log('successfully wrote to server');
-                            }
-                        });
-                    });
 
-                    child.on('close', function(code) {
-                        console.log('child exited with code ', code);
-                        testActive = false;
-                        activeProject = '';
-                        console.log('child stdout was ', childStreams.stdout);
-                    });
 
-                    Object.keys(childStreams).forEach(function(stream) {
-                        child[stream].on('data', function(chunk) {
-                            childStreams[stream] += chunk;
-                        });
-                    });
-
-                    res.json({
-                        status: 'Success',
-                        message: 'Test has started'
-                    });
                 }
             }
         });

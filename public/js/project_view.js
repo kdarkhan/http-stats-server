@@ -97,17 +97,22 @@ require(['graphclient', 'jquery', 'jqueryui', 'bootstrap'], function(graphClient
 
         function pollingStatus() {
             $.ajax({
-                url: '/get_status',
+                url: 'get_status',
                 success: function(data) {
-                    if (data && data.testRunning === true) {
+                    if (data && data.status === 'running') {
                         tryCount++;
-                        $('#currentStatus').text(data.projectName + ' is running');
+                        $('#currentStatus').text('test is running');
                         // poll every 1 sec 10 times, then poll every 10 sec
                         setTimeout(pollingStatus, tryCount < 10 ? 1000 : 10000);
                     } else {
+                        if (data && data.status === 'success') {
+                            // test is successful, add the result
+                            addLatestResult();
+                            $('#currentStatus').text('Test successfully completed');
+                        } else {
+                            $('#currentStatus').text('Test failed');
+                        }
                         // test is complete, enable the button
-                        addLatestResult();
-                        $('#currentStatus').text('');
                         $('#startTest').attr('disabled', false);
                     }
                 },
