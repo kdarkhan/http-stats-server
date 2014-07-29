@@ -19,6 +19,7 @@
     "kraken-js": "^1.0.1",
     "less": "^1.7.3",
     "localizr": "^0.1.0",
+    "mongodb": "^1.4.7",
     "nconf": "^0.6.9",
     "requirejs": "^2.1.14"
   },
