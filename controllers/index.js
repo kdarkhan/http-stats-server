@@ -63,10 +63,9 @@ module.exports = function(router) {
 
     router.post('/create_new', function(req, res) {
         var newProject = parseProject(req.body.options);
-        console.log('I am here', newProject);
         if (newProject) {
             newProject.lastTestResult = 'success';
-            dbmanager.addToCollection(PROJECT_COLNAME, newProject, function(err, result) {
+            dbmanager.addProject(newProject, function(err, result) {
                 if (err) {
                     res.json(500, {
                         status: 'Error',
@@ -85,7 +84,6 @@ module.exports = function(router) {
                 }
             });
         } else {
-            console.log('if false');
             res.json(500, {
                 status: 'Error',
                 message: 'Invalid request'
@@ -145,7 +143,6 @@ module.exports = function(router) {
                             }
                         });
                     } else {
-                        console.log(typeof result);
                         res.send('Project ' + projectName + ' does not exist');
                     }
                 }
@@ -169,13 +166,11 @@ module.exports = function(router) {
                     testActive = true;
                     dbmanager.setLastStatus(projectName, 'running', function(err) {
                         if (err) {
-                            console.log('err happened');
                             res.json(503, {
                                 status: 'Error',
                                 message: err.toString()
                             });
                         } else {
-                            console.log('dude here');
                             activeProject = projectName;
                             childStreams = {
                                 stdout: '',
