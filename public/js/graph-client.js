@@ -231,14 +231,14 @@ define([
                     name: moment(sample.timestamp).format(dateFormat),
                     // data: reqPerSecData
                     data: Object.keys(reqPerSecData).map(function(key) {
-                        return [Number(key), reqPerSecData[key]];
+                        return [Number(key), toFixed(reqPerSecData[key], 2)];
                     })
                 });
                 responseTimeSeries.push({
                     name: moment(sample.timestamp).format(dateFormat),
                     // data: responseTimeData
                     data: Object.keys(responseTimeData).map(function(key) {
-                        return [Number(key), responseTimeData[key]];
+                        return [Number(key), toFixed(responseTimeData[key], 2)];
                     })
                 });
 
@@ -246,14 +246,14 @@ define([
                     name: moment(sample.timestamp).format(dateFormat),
                     // TODO
                     data: Object.keys(cpuData).map(function(key) {
-                        return [Number(key), cpuData[key]];
+                        return [Number(key), toFixed(cpuData[key], 2)];
                     })
                 });
                 memorySeries.push({
                     name: moment(sample.timestamp).format(dateFormat),
                     // TODO
                     data: Object.keys(memoryData).map(function(key) {
-                        return [Number(key), memoryData[key]];
+                        return [Number(key), toFixed(memoryData[key], 2)];
                     })
                 });
             });
