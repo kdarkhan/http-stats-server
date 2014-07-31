@@ -29,10 +29,10 @@ require(['jquery', 'bootstrap'], function() {
             timeout = Number($('#timeout').val());
         }
         var spawn;
+        var parsedSpawn;
         if ($('#launchServerEnabled').prop('checked')) {
             spawn = $('#launchServer').val();
             console.log('spawn ', spawn);
-            var parsedSpawn;
             try {
                 parsedSpawn = JSON.parse(spawn);
                 if (!Array.isArray(parsedSpawn)) {
@@ -45,7 +45,8 @@ require(['jquery', 'bootstrap'], function() {
         }
 
         var pm2host;
-        if ($('#pm2Enabled').prop('checked')) {
+        var pm2Enabled = $('#pm2Enabled').prop('checked');
+        if (pm2Enabled) {
             pm2host = $('#pm2host').val();
         }
         return {
@@ -64,7 +65,10 @@ require(['jquery', 'bootstrap'], function() {
                 requestOptions: $.trim($('#requestOptions').val() || '{}'),
                 requestTimeout: timeout,
                 spawn: parsedSpawn,
-                pm2host: pm2host
+                pm2: {
+                    enabled: pm2Enabled,
+                    bind_host: pm2host
+                }
             }
         };
     }

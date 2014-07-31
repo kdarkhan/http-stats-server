@@ -4,8 +4,6 @@ var dbmanager = require('../lib/mongoDbManager'),
     childProcess = require('child_process'),
     path = require('path');
 
-var PROJECT_COLNAME = 'projects';
-
 module.exports = function(router) {
 
     var testActive = false;
@@ -45,7 +43,7 @@ module.exports = function(router) {
                 delay: Number(options.delay),
                 warmup: options.warmup,
                 spawn: options.spawn,
-                pm2host: options.pm2host
+                pm2: options.pm2
             }
         };
 
