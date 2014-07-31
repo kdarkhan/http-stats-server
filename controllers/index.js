@@ -44,7 +44,8 @@ module.exports = function(router) {
                 stepRequests: Number(options.stepRequests),
                 delay: Number(options.delay),
                 warmup: options.warmup,
-                spawn: options.spawn
+                spawn: options.spawn,
+                pm2host: options.pm2host
             }
         };
 

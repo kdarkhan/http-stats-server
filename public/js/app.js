@@ -32,17 +32,21 @@ require(['jquery', 'bootstrap'], function() {
         if ($('#launchServerEnabled').prop('checked')) {
             spawn = $('#launchServer').val();
             console.log('spawn ', spawn);
-            console.log(typeof spawn);
             var parsedSpawn;
             try {
                 parsedSpawn = JSON.parse(spawn);
                 if (!Array.isArray(parsedSpawn)) {
                     throw new Error('bad spawn args');
                 }
-            } catch(err) {
+            } catch (err) {
                 parsedSpawn = spawn.split(' ');
             }
             console.log('spawn is ', parsedSpawn);
+        }
+
+        var pm2host;
+        if ($('#pm2Enabled').prop('checked')) {
+            pm2host = $('#pm2host').val();
         }
         return {
             _csrf: $('[name="_csrf"]').val(),
@@ -59,7 +63,8 @@ require(['jquery', 'bootstrap'], function() {
                 warmup: $('#warmupEnabled').val(),
                 requestOptions: $.trim($('#requestOptions').val() || '{}'),
                 requestTimeout: timeout,
-                spawn: parsedSpawn
+                spawn: parsedSpawn,
+                pm2host: pm2host
             }
         };
     }
@@ -97,9 +102,12 @@ require(['jquery', 'bootstrap'], function() {
         $('#launchServer').prop('disabled', !this.checked);
     }
 
+    function pm2EnableListener() {
+        $('#pm2host').prop('disabled', !this.checked);
+    }
+
     function createProjectListener() {
         var userInput = parseParameters();
-        console.log(userInput);
 
         if (validateInput(userInput)) {
             $('.statOptions input,.statOptions button').prop('disabled', true);
@@ -142,6 +150,7 @@ require(['jquery', 'bootstrap'], function() {
             $('#createProject').click(createProjectListener);
             $('#timeoutEnabled').change(timeoutEnableListener);
             $('#launchServerEnabled').change(launchServerEnableListener);
+            $('#pm2Enabled').change(pm2EnableListener);
         }
     };
 
