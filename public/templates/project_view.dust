@@ -75,11 +75,20 @@
                         <td>warmupEnabled</td>
                         <td>{warmup}</td>
                 </tr>
-
+                {?spawn}
                 <tr>
                         <td>launchServer</td>
                         <td>{spawn}</td>
                 </tr>
+                {/spawn}
+
+                {?pm2.bind_host}
+                <tr>
+                        <td>pm2host</td>
+                        <td>{pm2.bind_host}</td>
+                </tr>
+                {/pm2.bind_host}
+
                 {/project.httpStatsOptions}
               </table>
             </div>
