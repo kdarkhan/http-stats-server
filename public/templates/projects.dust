@@ -105,7 +105,7 @@
       <label for="requestOptions" class="col-md-3 control-label">requestOptions</label>
       <div class="col-md-6">
         <textarea style="resize:vertical" class="form-control input-sm" rows="2" id="requestOptions" placeholder="{}"></textarea>
-        <span class="help-block">JSON string which will be used as option to httpRequest object. Leave empty for default behavior.</span>
+        <span class="help-block">JSON string which will be used as an option object for httpRequest. Leave empty for default behavior.</span>
       </div>
     </div>
 
@@ -124,7 +124,7 @@
       <label for="launchServer" class="col-md-3 control-label">launchServer</label>
       <div class="col-md-6">
         <div class="input-group ">
-          <input type="text" class="form-control input-sm" id="launchServer" disabled>
+          <input type="text" class="form-control input-sm" id="launchServer" disabled placeholder="node server.js">
           <span class="input-group-addon">
             <input type="checkbox" id="launchServerEnabled">
           </span>
@@ -136,7 +136,7 @@
       <label for="pm2host" class="col-md-3 control-label">pm2</label>
       <div class="col-md-6">
         <div class="input-group ">
-          <input type="text" class="form-control input-sm" id="pm2host" disabled placeholder="localhost">
+          <input type="text" class="form-control input-sm" id="pm2host" disabled placeholder="bind_host">
           <span class="input-group-addon">
             <input type="checkbox" id="pm2Enabled">
           </span>
