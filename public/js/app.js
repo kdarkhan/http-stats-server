@@ -117,7 +117,7 @@ require(['jquery', 'bootstrap'], function() {
             $('.statOptions input,.statOptions button').prop('disabled', true);
 
             $.ajax({
-                url: 'create_new',
+                url: '/projects/create_new',
                 type: 'POST',
                 data: userInput,
                 success: function(data) {

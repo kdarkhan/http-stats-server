@@ -32,6 +32,10 @@ module.exports = function(router) {
             }
         };
 
+        if (options.pm2 && options.pm2.enabled) {
+            options.pm2.enabled = options.pm2.enabled.toLowerCase() === 'true';
+        }
+
         var requestOptions;
         try {
             requestOptions = JSON.parse(options.requestOptions);
@@ -192,6 +196,7 @@ module.exports = function(router) {
                                     });
                                 activeProject = '';
                                 console.log('child stdout was ', childStreams.stdout);
+                                console.log('child stderr was ', childStreams.stderr);
                             });
 
                             Object.keys(childStreams).forEach(function(stream) {
