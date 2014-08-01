@@ -126,13 +126,13 @@ require(['jquery', 'bootstrap'], function() {
                         var projectInfo = data.data;
                         var message = 'Successfully created ';
                         if (projectInfo) {
-                            message += '<a class="alert-link" href="' + projectInfo.name + '">' + projectInfo.name + '</a>.';
+                            message += '<a class="alert-link" href="/projects/' + projectInfo.name + '">' + projectInfo.name + '</a>.';
                         } else {
                             message += 'project.';
                         }
                         showAlert(message, 'alert-success');
                         projectInfo = projectInfo || {};
-                        $('#currentProjects tbody').append('<tr><td></td><td><a href="' + userInput.options.name + '/">' +
+                        $('#currentProjects tbody').append('<tr><td></td><td><a href=/projects/"' + userInput.options.name + '/">' +
                             userInput.options.name + '</a>' + '</td><td>' + (projectInfo.timestamp || 'Now') + '</td>');
                     } else {
                         showAlert('Failed to create project:\n' + JSON.stringify(data), 'alert-danger');

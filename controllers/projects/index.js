@@ -1,6 +1,6 @@
 'use strict';
 
-var dbmanager = require('../lib/mongoDbManager'),
+var dbmanager = require('../../lib/mongoDbManager'),
     childProcess = require('child_process'),
     path = require('path');
 
@@ -11,22 +11,7 @@ module.exports = function(router) {
     var childStreams = {};
 
     router.get('/', function(req, res) {
-        dbmanager.getAllProjects(function(err, projects) {
-            if (err) {
-                res.json(500, {
-                    status: 'Error',
-                    message: err.toString()
-                });
-            } else {
-                projects.forEach(function(project) {
-                    project.creationTime = project._id.getTimestamp();
-                });
-                res.render('projects', {
-                    projects: projects,
-                    testKey: 'hello there'
-                });
-            }
-        });
+        res.redirect('/');
     });
 
     function parseProject(options) {
@@ -135,7 +120,7 @@ module.exports = function(router) {
                                     message: err.toString()
                                 });
                             } else {
-                                res.render('project_view', {
+                                res.render('project', {
                                     project: project,
                                     results: JSON.stringify(results)
                                 });
@@ -176,7 +161,7 @@ module.exports = function(router) {
                                 stderr: ''
                             };
 
-                            var childPath = path.resolve(__dirname, '../lib/child.js');
+                            var childPath = path.resolve(__dirname, '../../lib/child.js');
                             console.log('child path is ', childPath);
 
                             var child = childProcess.fork(childPath, {
