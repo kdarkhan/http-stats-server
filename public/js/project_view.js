@@ -169,11 +169,7 @@ require(['graphclient', 'jquery', 'jqueryui', 'bootstrap'], function(graphClient
             $('#viewRaw').click(viewRaw);
             $('#clearResults').click(clearResults);
             $('#removeProject').click(removeProject);
-            $('#tabs').tabs({
-                hactivate: function() {
-                    $(window).resize();
-                }
-            });
+            $('#tabs').tabs();
             graphClient.constructAllGraphs(window.resultData);
         }
     };
