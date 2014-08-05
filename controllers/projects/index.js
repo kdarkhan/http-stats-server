@@ -1,8 +1,9 @@
 'use strict';
 
 var dbmanager = require('../../lib/mongoDbManager'),
-    childProcess = require('child_process'),
-    path = require('path');
+    util = require('../../lib/util'); // ,
+// childProcess = require('child_process'),
+// path = require('path');
 
 module.exports = function(router) {
 
@@ -52,7 +53,7 @@ module.exports = function(router) {
     router.post('/create_new', function(req, res) {
         var newProject = parseProject(req.body.options);
         if (newProject) {
-            newProject.lastTestResult = 'success';
+            newProject.status = 'success';
             dbmanager.addProject(newProject, function(err, result) {
                 if (err) {
                     res.json(500, {
@@ -88,7 +89,7 @@ module.exports = function(router) {
 
     router.get('/:name/get_status', function(req, res) {
         var projectName = req.params.name;
-        dbmanager.getLastStatus(projectName, function(err, result) {
+        dbmanager.getProjectStatus(projectName, function(err, result) {
             if (err) {
                 res.json(503, {
                     status: err
@@ -139,83 +140,19 @@ module.exports = function(router) {
     });
 
     router.post('/:name/start_test', function(req, res) {
+
         var projectName = req.params.name;
-        dbmanager.getProject(projectName, function(err, project) {
-            if (err || !project) {
-                // redirect to current project without start_test
-                res.redirect('.');
+        util.startTest(projectName, function(err) {
+            if (err) {
+                res.json(503, {
+                    status: 'Error',
+                    message: err.toString()
+                });
             } else {
-                if (testActive || project.lastTestResult === 'running') {
-                    res.json(503, {
-                        status: 'Error',
-                        message: 'Another test is already running'
-                    });
-                } else {
-                    testActive = true;
-                    dbmanager.setLastStatus(projectName, 'running', function(err) {
-                        if (err) {
-                            res.json(503, {
-                                status: 'Error',
-                                message: err.toString()
-                            });
-                        } else {
-                            activeProject = projectName;
-                            childStreams = {
-                                stdout: '',
-                                stderr: ''
-                            };
-
-                            var childPath = path.resolve(__dirname, '../../lib/child.js');
-                            console.log('child path is ', childPath);
-
-                            var child = childProcess.fork(childPath, {
-                                silent: true
-                            });
-
-                            child.send(project.httpStatsOptions);
-
-                            child.on('message', function(result) {
-                                console.log('child send results ', result);
-                                dbmanager.saveResult(result, projectName, function(err) {
-                                    if (err) {
-                                        console.error('err occurred while saving res ', err);
-                                    } else {
-                                        console.log('successfully wrote to server');
-                                    }
-                                });
-                            });
-
-                            child.on('close', function(code) {
-                                console.log('child exited with code ', code);
-                                testActive = false;
-                                dbmanager.setLastStatus(projectName, code === 0 ? 'success' : 'error',
-                                    function(err) {
-                                        if (err) {
-                                            console.error(err);
-                                        }
-                                    });
-                                activeProject = '';
-                                console.log('child stdout was ', childStreams.stdout);
-                                console.log('child stderr was ', childStreams.stderr);
-                            });
-
-                            Object.keys(childStreams).forEach(function(stream) {
-                                child[stream].on('data', function(chunk) {
-                                    childStreams[stream] += chunk;
-                                });
-                            });
-
-                            res.json({
-                                status: 'Success',
-                                message: 'Test has started'
-                            });
-                        }
-                    });
-
-
-
-
-                }
+                res.json({
+                    status: 'Success',
+                    message: 'Test has started'
+                });
             }
         });
     });
