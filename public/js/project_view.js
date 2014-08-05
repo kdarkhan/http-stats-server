@@ -4,7 +4,6 @@
 require.config({
     paths: {
         jquery: '//code.jquery.com/jquery-1.11.0.min',
-        jqueryui: '//code.jquery.com/ui/1.11.0/jquery-ui.min',
         moment: 'moment',
         hcoptions: 'hc-options',
         graphclient: 'graph-client',
@@ -22,7 +21,7 @@ require.config({
 });
 
 
-require(['graphclient', 'jquery', 'jqueryui', 'bootstrap'], function(graphClient) {
+require(['graphclient', 'jquery', 'bootstrap'], function(graphClient) {
 
     function addLatestResult() {
         var errorMessage = 'Could not fetch the latest result. Refresh the page manually to update the graph';
@@ -169,7 +168,6 @@ require(['graphclient', 'jquery', 'jqueryui', 'bootstrap'], function(graphClient
             $('#viewRaw').click(viewRaw);
             $('#clearResults').click(clearResults);
             $('#removeProject').click(removeProject);
-            $('#tabs').tabs();
             graphClient.constructAllGraphs(window.resultData);
         }
     };
