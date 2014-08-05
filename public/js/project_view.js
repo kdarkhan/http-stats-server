@@ -47,7 +47,7 @@ require(['graphclient', 'jquery', 'bootstrap'], function(graphClient) {
     function addAlert(alertType, message) {
         var afterID = '#buttons';
         var alertID = 'alertMessage';
-        var content = '<div id="' + alertID + '" class="alert ' +  alertType + ' alert-dismissible" role="alert"> <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' + message + ' </div>';
+        var content = '<div id="' + alertID + '" class="alert ' + alertType + ' alert-dismissible" role="alert"> <button type="button" class="close" data-dismiss="alert"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>' + message + ' </div>';
         // remove old success and warning alerts
         // keeping error alerts in html
 
@@ -66,7 +66,16 @@ require(['graphclient', 'jquery', 'bootstrap'], function(graphClient) {
                     _csrf: csrfToken
                 },
                 success: function() {
-                    ['#reqPerSecGraphTime', '#responseTimeGraphTime', '#reqPerSecGraphConcurrency', '#responseTimeGraphConcurrency']
+                    [
+                        '#reqPerSecGraphTime',
+                        '#responseTimeGraphTime',
+                        '#cpuGraphTime',
+                        '#memoryGraphTime',
+                        '#reqPerSecGraphConcurrency',
+                        '#responseTimeGraphConcurrency',
+                        '#cpuGraphConcurrency',
+                        '#memoryGraphConcurrency'
+                    ]
                         .forEach(function(containerID) {
                             var graph = $(containerID).highcharts();
                             if (graph) {
