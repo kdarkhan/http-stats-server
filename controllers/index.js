@@ -7,7 +7,7 @@ module.exports = function(router) {
     router.get('/', function(req, res) {
         dbmanager.getAllProjects(function(err, projects) {
             if (err) {
-                res.json(500, {
+                res.status(500).json({
                     status: 'Error',
                     message: err.toString()
                 });

@@ -56,7 +56,7 @@ module.exports = function(router) {
             newProject.status = 'success';
             dbmanager.addProject(newProject, function(err, result) {
                 if (err) {
-                    res.json(500, {
+                    res.status(500).json({
                         status: 'Error',
                         message: err.toString()
                     });
@@ -73,7 +73,7 @@ module.exports = function(router) {
                 }
             });
         } else {
-            res.json(500, {
+            res.status(500).json({
                 status: 'Error',
                 message: 'Invalid request'
             });
@@ -91,7 +91,7 @@ module.exports = function(router) {
         var projectName = req.params.name;
         dbmanager.getProjectStatus(projectName, function(err, result) {
             if (err) {
-                res.json(503, {
+                res.status(500).json({
                     status: err
                 });
             } else {
@@ -111,7 +111,7 @@ module.exports = function(router) {
         } else {
             dbmanager.getProject(projectName, function(err, project) {
                 if (err) {
-                    res.json(500, {
+                    res.status(500).json({
                         status: 'Error',
                         message: err.toString()
                     });
@@ -120,7 +120,7 @@ module.exports = function(router) {
                         // get projects
                         dbmanager.getProjectResults(projectName, function(err, results) {
                             if (err) {
-                                res.json(500, {
+                                res.status(500).json({
                                     status: 'Error',
                                     message: err.toString()
                                 });
@@ -144,7 +144,7 @@ module.exports = function(router) {
         var projectName = req.params.name;
         util.startTest(projectName, function(err) {
             if (err) {
-                res.json(503, {
+                res.status(500).json({
                     status: 'Error',
                     message: err.toString()
                 });
@@ -165,7 +165,7 @@ module.exports = function(router) {
         var projectName = req.params.name;
         dbmanager.getLatestResult(projectName, function(err, result) {
             if (err) {
-                res.json(500, err);
+                res.status(500).json(err);
             } else {
                 res.json(result);
             }
@@ -176,7 +176,7 @@ module.exports = function(router) {
         var projectName = req.params.name;
         dbmanager.getProjectResults(projectName, function(err, results) {
             if (err) {
-                res.json(500, err);
+                res.status(500).json(err);
             } else {
                 res.json(results);
             }
@@ -187,7 +187,7 @@ module.exports = function(router) {
         var projectName = req.params.name;
         dbmanager.clearProjectResults(projectName, function(err) {
             if (err) {
-                res.json(500, {
+                res.status(500).json({
                     status: 'Error',
                     message: err
                 });
@@ -204,7 +204,7 @@ module.exports = function(router) {
         var projectName = req.params.name;
         dbmanager.removeProject(projectName, function(err) {
             if (err) {
-                res.json(500, {
+                res.status(500).json({
                     status: 'Error',
                     message: err
                 });

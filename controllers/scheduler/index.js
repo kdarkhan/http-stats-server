@@ -20,7 +20,7 @@ module.exports = function(router) {
     router.get('/', function(req, res) {
         dbmanager.getSchedulerTasks(function(err, tasks) {
             if (err) {
-                res.json(503, {
+                res.status(500).json({
                     message: 'Error',
                     error: err.toString()
                 });
@@ -37,14 +37,14 @@ module.exports = function(router) {
         console.log('options are ', req.body.options);
         parseTask(req.body.options, function(err, result) {
             if (err) {
-                res.status(503).json({
+                res.status(500).json({
                     status: 'Error',
                     message: err.toString()
                 });
             } else {
                 dbmanager.addTask(result, function(err, result) {
                     if (err) {
-                        res.status(503).json({
+                        res.status(500).json({
                             status: 'Error',
                             message: err.toString()
                         });
@@ -65,7 +65,7 @@ module.exports = function(router) {
         console.log('taskid is ', taskId);
         dbmanager.removeTask(taskId, function(err, first, second) {
             if (err) {
-                res.status(503).json({
+                res.status(500).json({
                     status: 'Error',
                     message: err.toString()
                 });
