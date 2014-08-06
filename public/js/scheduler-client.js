@@ -39,15 +39,17 @@ require(['jquery', 'bootstrap'], function() {
                 var task = options.options;
                 console.log('good ', success);
                 if (success && success._id) {
-                    var newRow = '<tr id=row_"' + success._id + '"><td>'  + task.projectName +
-                        '</td><td>' + task.cronString +  '</td><td>'+ task.enabled + '<td></tr>';
-                    $('#newProjectRow').before();
+                    var newRow = '<tr id="row_' + success._id + '"><td>' + task.projectName +
+                        '</td><td>' + task.cronString + '</td><td><input type="checkbox" ' +
+                        (task.enabled ? 'checked' : '') + '></td><td><a href="javascript:void(0);" onclick="window.removeTask(\'' +
+                        success._id + '\');"><span class="glyphicon glyphicon-remove-circle"></span></a></td></tr>';
+                    $('#newProjectRow ').before(newRow);
                 } else {
                     console.log('response did not contain _id for some reason');
                 }
             })
             .fail(function(err) {
-                console.log('bad ', err && err.responseText);
+                console.log('bad', err && err.responseText);
             })
             .always(function() {
                 console.log('always');
@@ -67,7 +69,7 @@ require(['jquery', 'bootstrap'], function() {
                 }
             })
                 .done(function(success) {
-                    console.log('delete yes ', success);
+                    console.log('delete yes', success);
                     $('#row_' + taskId).remove();
                 })
                 .fail(function(err) {
