@@ -170,9 +170,9 @@
     <table id="currentProjects" class="table table-striped table-hover ">
       <thead>
         <tr>
-          <th>#</th>
-          <th>Project name</th>
-          <th>Creation time</th>
+          <th class="col-md-1">#</th>
+          <th class="col-md-4">Project name</th>
+          <th class="col-md-7">Creation time</th>
         </tr>
       </thead>
       <tbody>

@@ -125,6 +125,8 @@ module.exports = function(router) {
                                     message: err.toString()
                                 });
                             } else {
+                                project.httpStatsOptions.requestOptions = JSON.stringify(
+                                    project.httpStatsOptions.requestOptions);
                                 res.render('project', {
                                     project: project,
                                     results: JSON.stringify(results)

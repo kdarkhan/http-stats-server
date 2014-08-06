@@ -39,11 +39,13 @@ require(['jquery', 'bootstrap'], function() {
                 var task = options.options;
                 console.log('good ', success);
                 if (success && success._id) {
-                    var newRow = '<tr id="row_' + success._id + '"><td>' + task.projectName +
+                    var newRow = '<tr style="display:none" id="row_' + success._id + '"><td>' + task.projectName +
                         '</td><td>' + task.cronString + '</td><td><input type="checkbox" ' +
                         (task.enabled ? 'checked' : '') + '></td><td><a href="javascript:void(0);" onclick="window.removeTask(\'' +
                         success._id + '\');"><span class="glyphicon glyphicon-remove-circle"></span></a></td></tr>';
-                    $('#newProjectRow ').before(newRow);
+                    $('#newProjectRow').before(newRow);
+                    $('#newProjectRow input').val('');
+                    $('#row_' + success._id).slideDown(10000);
                 } else {
                     console.log('response did not contain _id for some reason');
                 }

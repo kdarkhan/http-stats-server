@@ -1,8 +1,21 @@
 .top-buffer {
-	margin: 4px;
+    margin: 4px;
 }
-
 .alert {
-	margin-top: 20px;
-	margin-bottom: 0px;
+    margin-top: 20px;
+    margin-bottom: 0px;
+}
+.table td, .table th {
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.table td input {
+    margin-top: -7px;
+    margin-bottom: -7px;
+    text-align: center;
+}
+.table {
+    table-layout: fixed;
 }
