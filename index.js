@@ -11,7 +11,8 @@ var kraken = require('kraken-js'),
         }
     },
     port = process.env.PORT || 8000,
-    nconf = require('nconf');
+    nconf = require('nconf'),
+    scheduler = require('./lib/scheduler-util.js');
 
 nconf.argv()
     .env()
@@ -20,12 +21,15 @@ nconf.argv()
     });
 
 dbmanager.connect({
-        connectUri: nconf.get('mongodb:connectionUri')
-    });
+    connectUri: nconf.get('mongodb:connectionUri')
+}, function() {
+    scheduler.initializeScheduler();
+});
+
 
 app.use(kraken(options));
 
 
-app.listen(port, function(err) {
+app.listen(port, function() {
     console.log('[%s] Listening on http://localhost:%d', app.settings.env, port);
 });

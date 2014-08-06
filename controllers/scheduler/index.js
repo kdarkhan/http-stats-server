@@ -1,7 +1,8 @@
 'use strict';
 
 var dbmanager = require('../../lib/mongoDbManager'),
-    _ = require('underscore');
+    _ = require('underscore'),
+    schedulerUtil = require('../../lib/scheduler-util');
 
 var taskDefaults = {
     enabled: true
@@ -10,6 +11,7 @@ var taskDefaults = {
 function parseTask(options, callback) {
     if (options && options.cronString && options.projectName) {
         _.defaults(options, taskDefaults);
+        options.enabled = !!options.enabled;
         return callback(null, options);
     } else {
         return callback(new Error('Provided options are not valid'));
@@ -26,7 +28,7 @@ module.exports = function(router) {
                 });
             } else {
                 res.render('scheduler', {
-                    tasks: tasks 
+                    tasks: tasks
                 });
             }
         });
@@ -42,6 +44,13 @@ module.exports = function(router) {
                     message: err.toString()
                 });
             } else {
+                if (!schedulerUtil.isValidCronString(result.cronString)) {
+                    res.status(400).json({
+                        status: 'Error',
+                        message: result.cronString + ' is not valid cron string'
+                    });
+                    return;
+                }
                 dbmanager.addTask(result, function(err, result) {
                     if (err) {
                         res.status(500).json({
