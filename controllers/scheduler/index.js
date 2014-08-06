@@ -11,7 +11,7 @@ var taskDefaults = {
 function parseTask(options, callback) {
     if (options && options.cronString && options.projectName) {
         _.defaults(options, taskDefaults);
-        options.enabled = !!options.enabled;
+        options.enabled = options.enabled === 'true';
         return callback(null, options);
     } else {
         return callback(new Error('Provided options are not valid'));
@@ -32,7 +32,6 @@ module.exports = function(router) {
                 });
             }
         });
-
     });
 
     router.post('/create_task', function(req, res) {
@@ -58,11 +57,14 @@ module.exports = function(router) {
                             message: err.toString()
                         });
                     } else {
+                        var task = result[0];
+                        schedulerUtil.startTask(task);
                         res.json({
                             status: 'Success',
                             message: 'Task was added',
-                            _id: result[0]._id
+                            _id: task._id
                         });
+
                     }
                 });
             }
@@ -72,15 +74,14 @@ module.exports = function(router) {
     router.delete('/', function(req, res) {
         var taskId = req.body.taskId;
         console.log('taskid is ', taskId);
-        dbmanager.removeTask(taskId, function(err, first, second) {
+        dbmanager.removeTask(taskId, function(err) {
             if (err) {
                 res.status(500).json({
                     status: 'Error',
                     message: err.toString()
                 });
             } else {
-                console.log('first is ', first);
-                console.log('second is ', second);
+                schedulerUtil.disableTask(taskId);
                 res.json({
                     status: 'Success',
                     message: 'Successfully removed task'
