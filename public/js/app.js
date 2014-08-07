@@ -110,6 +110,13 @@ require(['jquery', 'bootstrap'], function() {
         $('#pm2host').prop('disabled', !this.checked);
     }
 
+    function concurrencyChangeListener() {
+        console.log('this is called');
+        var peakConcurrency = Number($('#peakConcurrency').val()),
+            endConcurrency = Number($('#endConcurrency').val());
+        $('#concurrencyDecrement').prop('disabled', (peakConcurrency < endConcurrency)); 
+    }
+
     function createProjectListener() {
         var userInput = parseParameters();
 
@@ -155,6 +162,8 @@ require(['jquery', 'bootstrap'], function() {
             $('#timeoutEnabled').change(timeoutEnableListener);
             $('#launchServerEnabled').change(launchServerEnableListener);
             $('#pm2Enabled').change(pm2EnableListener);
+            $('#peakConcurrency').change(concurrencyChangeListener);
+            $('#endConcurrency').change(concurrencyChangeListener);
         }
     };
 
