@@ -10,7 +10,7 @@ define([
     ],
     function(moment) {
         var dateFormat = 'MMM Do YYYY, h:mm:ss a';
-        var graphWidth = $('#reqPerSecGraphTime').parent().innerWidth();
+        var graphWidth = $('#reqPerSecGraphTime').parent().parent().innerWidth();
 
         function toFixed(num, decimal) {
             if (!num) {
@@ -403,6 +403,8 @@ define([
                     },
                     series: data
                 });
+            } else {
+                $('#cpuGraphTime').html('Cpu data is not available for this project');
             }
         }
 
@@ -438,6 +440,8 @@ define([
                     },
                     series: data
                 });
+            } else {
+                $('#memoryGraphTime').html('Memory usage data is not available for this project');
             }
         }
 
@@ -576,14 +580,6 @@ define([
                 addAveragesToTimeData(timeData);
                 var concurrencyData = buildConcurrencySeries(data);
                 $(function() {
-                    // var concurrencyClasses = [];
-
-                    if (showCPU) {
-                        //concurrencyClasses.push(addCPUGraphs(timeData.cpuData, timeData.timestamps));
-                    }
-                    if (showMemory) {
-                        //concurrencyClasses.push(addMemoryGraphs(timeData.memoryData, timeData.timestamps));
-                    }
 
                     addReqPerSecGraphTime(timeData.reqPerSecData, timeData.timestamps);
                     addResponseTimeGraphTime(timeData.responseTimeData, timeData.timestamps);
@@ -597,7 +593,9 @@ define([
                 });
             } else {
                 console.log('bad data');
-                $('#reqPerSecGraphTime').html('No results to display');
+                var info = 'No results to display. Start a new test to get data';
+                $('#reqPerSecGraphTime').html(info);
+                $('#responseTimeGraphTime').html(info);
             }
         }
 

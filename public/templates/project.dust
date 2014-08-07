@@ -3,146 +3,157 @@
 
 {<body}
 
-<div class="row">
-<div class="col-md-8 col-md-offset-2">
-<ul class="nav nav-tabs nav-justified" style="margin-bottom: 15px;">
-  <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
-  <li class="active"><a href="#projectResults" data-toggle="tab">Project results</a></li>
-  <li class=""><a href="#projectInfo" data-toggle="tab">Project info</a></li>
-</ul>
-
-</div>
-</div>
-
-
-<div class="row">
-<div id="myTabContent" class="tab-content">
-    
-    <div class="tab-pane fade" id="projectInfo">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-success ">
-              <div class="panel-heading">Project options</div>
-
-              <table class="table table-hover">
-                <tr>
-                <th class="col-md-4">option</th>
-                <th class="col-md-7">value</th>
-                </tr>
-              {#project.httpStatsOptions}
-                <tr>
-                        <td>name</td>
-                        <td>{project.name}</td>
-                </tr>
-                <tr>
-                        <td>url</td>
-                        <td>{url}</td>
-                </tr>
-                <tr>
-                        <td>beginConcurrency</td>
-                        <td>{beginConcurrency}</td>
-                </tr>
-                <tr>
-                        <td>peakConcurrency</td>
-                        <td>{peakConcurrency}</td>
-                </tr>
-                <tr>
-                        <td>endConcurrency</td>
-                        <td>{endConcurrency}</td>
-                </tr>
-                <tr>
-                        <td>concurrencyIncrement</td>
-                        <td>{concurrencyIncrement}</td>
-                </tr>
-                <tr>
-                        <td>concurrencyDecrement</td>
-                        <td>{concurrencyDecrement}</td>
-                </tr>
-                <tr>
-                        <td>stepRequests</td>
-                        <td>{stepRequests}</td>
-                </tr>
-                <tr>
-                        <td>delay</td>
-                        <td>{delay}</td>
-                </tr>
-                <tr>
-                        <td>timeout</td>
-                        <td>{delay}</td>
-                </tr>
-                <tr>
-                        <td>requestOptions</td>
-                        <td>{requestOptions}</td>
-                </tr>
-                <tr>
-                        <td>warmupEnabled</td>
-                        <td>{warmup}</td>
-                </tr>
-                {?spawn}
-                <tr>
-                        <td>launchServer</td>
-                        <td>{spawn}</td>
-                </tr>
-                {/spawn}
-
-                {?pm2.bind_host}
-                <tr>
-                        <td>pm2host</td>
-                        <td>{pm2.bind_host}</td>
-                </tr>
-                {/pm2.bind_host}
-
-                {/project.httpStatsOptions}
-              </table>
-            </div>
-
-        </div>
-        
-    </div>
-
-        <div class="tab-pane fade active in" id="projectResults">
-
-            <div class="col-md-8 col-md-offset-2">
-            <div class="text-center" id="buttons">
-            <div class="btn-group">
-            <button type="button" class="btn btn-success" id="startTest">
-            Start a new test 
-            </button>
-            <button type="button" class="btn btn-info" id="viewRaw">View raw results</button>
-            <button type="button" class="btn btn-warning" id="clearResults">Clear results</button>
-            <button type="button" class="btn btn-danger" id="removeProject">Remove project</button>
-            </div>
-            </div>
-
-            <label id="currentStatus"></label>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			<ul class="nav nav-tabs nav-justified" role="tablist" style="margin-bottom: 15px;">
+				<li class=""><a href="/"><span class="glyphicon glyphicon-home"></span> Home</a></li>
+				<li class="active"><a href="#projectResults" data-toggle="tab">Project results</a></li>
+				<li class=""><a href="#projectInfo" data-toggle="tab">Project info</a></li>
+			</ul>
+		</div>
+	</div>
 
 
+	<div class="row">
+		<div id="myTabContent" class="tab-content">
+		
+			<div class="tab-pane fade" id="projectInfo">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="panel panel-success ">
+						<div class="panel-heading">Project options</div>
+						<table class="table table-hover">
+							<tr>
+							<th class="col-md-4">option</th>
+							<th class="col-md-7">value</th>
+							</tr>
+							{#project.httpStatsOptions}
+    							<tr>
+    								<td>name</td>
+    								<td>{project.name}</td>
+    							</tr>
+    							<tr>
+    								<td>url</td>
+    								<td>{url}</td>
+    							</tr>
+    							<tr>
+    								<td>beginConcurrency</td>
+    								<td>{beginConcurrency}</td>
+    							</tr>
+    							<tr>
+    								<td>peakConcurrency</td>
+    								<td>{peakConcurrency}</td>
+    							</tr>
+    							<tr>
+    								<td>endConcurrency</td>
+    								<td>{endConcurrency}</td>
+    							</tr>
+    							<tr>
+    								<td>concurrencyIncrement</td>
+    								<td>{concurrencyIncrement}</td>
+    							</tr>
+    							<tr>
+    								<td>concurrencyDecrement</td>
+    								<td>{concurrencyDecrement}</td>
+    							</tr>
+    							<tr>
+    								<td>stepRequests</td>
+    								<td>{stepRequests}</td>
+    							</tr>
+    							<tr>
+    								<td>delay</td>
+    								<td>{delay}</td>
+    							</tr>
+    							<tr>
+    								<td>timeout</td>
+    								<td>{delay}</td>
+    							</tr>
+    							<tr>
+    								<td>requestOptions</td>
+    								<td>{requestOptions}</td>
+    							</tr>
+    							<tr>
+    								<td>warmupEnabled</td>
+    								<td>{warmup}</td>
+    							</tr>
+    							{?spawn}
+        							<tr>
+        								<td>launchServer</td>
+        								<td>{spawn}</td>
+        							</tr>
+    							{/spawn}
 
-            <div id="graphsOverTime">
-                <div id="reqPerSecGraphTime"></div>
-                <div id="responseTimeGraphTime"></div>
-                <div id="cpuGraphTime"></div>
-                <div id="memoryGraphTime"></div>
-            </div>
+    							{?pm2.bind_host}
+        							<tr>
+        								<td>pm2host</td>
+        								<td>{pm2.bind_host}</td>
+        							</tr>
+    							{/pm2.bind_host}
 
-            <div id="graphsOverConcurrency">
-                <div id="reqPerSecGraphConcurrency"></div>
-                <div id="responseTimeGraphConcurrency"></div>
-                <div id="cpuGraphConcurrency"></div>
-                <div id="memoryGraphConcurrency"></div>
-            </div>
+							{/project.httpStatsOptions}
+						</table>
+					</div>
+				</div>
 
-    </div>
+			</div>
 
-</div> 
+			<div class="tab-pane fade active in" id="projectResults">
 
-</div>
+				<div class="col-md-8 col-md-offset-2">
+
+					<div class="text-center" id="buttons">
+						<div class="btn-group">
+							<button type="button" class="btn btn-success" id="startTest">Start a new test</button>
+							<button type="button" class="btn btn-info" id="viewRaw">View raw results</button>
+							<button type="button" class="btn btn-warning" id="clearResults">Clear results</button>
+							<button type="button" class="btn btn-danger" id="removeProject">Remove project</button>
+						</div>
+					</div>
+
+					<label id="currentStatus"></label>
+
+					<ul class="nav nav-tabs nav-justified" role="tablist">
+						<li class="active"><a href="#responseTimeGraphs" data-toggle="tab">Response time</a></li>
+						<li><a href="#reqPerSecondGraphs" data-toggle="tab">Request per second</a></li>
+						<li class=""><a href="#cpuUsageGraphs" data-toggle="tab">CPU usage</a></li>
+						<li class=""><a href="#memoryUsageGraphs" data-toggle="tab">Memory usage</a></li>
+					</ul>
+
+					<div class="tab-content">
+						<div class="tab-pane fade active in" id="responseTimeGraphs">
+							<div id="responseTimeGraphTime"></div>
+							<div id="responseTimeGraphConcurrency"></div>
+						</div>
+
+						<div class="tab-pane fade" id="reqPerSecondGraphs">
+							<div id="reqPerSecGraphTime"></div>
+							<div id="reqPerSecGraphConcurrency"></div>
+						</div>
+
+						<div class="tab-pane fade" id="cpuUsageGraphs">
+							<div id="cpuGraphTime"></div>
+							<div id="cpuGraphConcurrency"></div>
+						</div>
+
+						<div class="tab-pane fade" id="memoryUsageGraphs">
+							<div id="memoryGraphTime"></div>
+							<div id="memoryGraphConcurrency"></div>
+						</div>
+					</div>
+
+				</div>
+
+			</div>
+
+		</div> 
+
+	</div>
 
 
-    <input type="hidden" name="_csrf" value="{_csrf}">
+	<input type="hidden" name="_csrf" value="{_csrf}">
 
 
 
 
-    <script>window.resultData = {results|s};</script>
-    <script data-main="/js/project_view" src="/components/requirejs/require.js"></script>
+	<script>window.resultData = {results|s};</script>
+	<script data-main="/js/project_view" src="/components/requirejs/require.js"></script>
 {/body}
