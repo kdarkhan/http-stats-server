@@ -23,6 +23,7 @@
 								<label for="projectname" class="col-md-4 control-label">projectName</label>
 								<div class="col-md-7">
 									<input type="text" class="form-control input-sm" id="projectName">
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Unique project name"></span>
 								</div>
 							</div>
 
@@ -30,6 +31,7 @@
 								<label for="url" class="col-md-4 control-label">URL</label>
 								<div class="col-md-7">
 									<input type="text" class="form-control input-sm" id="url" placeholder="http://youserver.com">
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="URL to which all of the requests will be sent"></span>
 								</div>
 							</div>
 
@@ -37,6 +39,7 @@
 								<label for="beginConcurrency" class="col-md-4 control-label">beginConcurrency</label>
 								<div class="col-md-7">
 									<input type="number" class="form-control input-sm" id="beginConcurrency" placeholder="1" min=1 value="1">
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Concurrency level with which the test starts"></span>
 								</div>
 							</div>
 
@@ -44,6 +47,7 @@
 								<label for="peakConcurrency" class="col-md-4 control-label">peakConcurrency</label>
 								<div class="col-md-7">
 									<input type="number" class="form-control input-sm" id="peakConcurrency" placeholder="1" min=1 value="25">
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="The maximum concurrency level"></span>
 								</div>
 							</div>
 
@@ -51,13 +55,15 @@
 								<label for="endConcurrency" class="col-md-4 control-label">endConcurrency</label>
 								<div class="col-md-7">
 									<input type="number" class="form-control input-sm" id="endConcurrency" placeholder="1" min=1 value="25">
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="If this is smaller than peakConcurrency, test will decrement concurrency (ramp-down) after reaching peakConcurrency"></span>
 								</div>
 							</div>
 
 							<div class="row top-buffer">
 								<label for="concurrencyIncrement" class="col-md-4 control-label">concurrencyIncrement</label>
 								<div class="col-md-7">
-									<input type="number" class="form-control input-sm" id="concurrencyIncrement" placeholder="1" min=1 value="1">
+									<input type="number" class="form-control input-sm" id="concurrencyIncrement" placeholder="1" min=1 value="2">
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Increment between consequent concurrency levels"></span>
 								</div>
 							</div>
 
@@ -65,6 +71,7 @@
 								<label for="concurrencyDecrement" class="col-md-4 control-label">concurrencyDecrement</label>
 								<div class="col-md-7">
 									<input type="number" class="form-control input-sm" id="concurrencyDecrement" placeholder="1" min=1 value="1" disabled>
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Decrement, used only during ramp-down (peakConcurrency > endConcurrency)"></span>
 								</div>
 							</div>
 
@@ -72,6 +79,7 @@
 								<label for="stepRequests" class="col-md-4 control-label">stepRequests</label>
 								<div class="col-md-7">
 									<input type="number" class="form-control input-sm" id="stepRequests" placeholder="1" min=1 value="1000">
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Number of request to be sent in each concurrency level"></span>
 								</div>
 							</div>
 
@@ -79,6 +87,7 @@
 								<label for="stepDelay" class="col-md-4 control-label">delay</label>
 								<div class="col-md-7">
 									<input type="number" class="form-control input-sm" id="stepDelay" placeholder="0" min=0 value=0>
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Delay in milliseconds between consequent steps"></span>
 								</div>
 							</div>
 
@@ -93,6 +102,7 @@
 											<input type="checkbox" id="timeoutEnabled">
 										</span>
 									</div>
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Timeout in milliseconds, if no response comes within specified number, the test fails"></span>
 								</div>
 							</div>
 
@@ -101,7 +111,7 @@
 								<label for="requestOptions" class="col-md-4 control-label">requestOptions</label>
 								<div class="col-md-7">
 								<textarea style="resize:vertical" class="form-control input-sm" rows="2" id="requestOptions" placeholder="{}"></textarea>
-								<span class="help-block">JSON string which will be used as an option object for httpRequest. Leave empty for default behavior.</span>
+								<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-delay="300" data-trigger="hover click" data-html="true" title="The test uses <a href=http://nodejs.org/api/http.html#http_http_request_options_callback target=_blank>http.request</a> object to send requests. You can override any parameters there by putting JSON in this field."> </span>	
 								</div>
 							</div>
 
@@ -113,11 +123,12 @@
 										<option value="true">true</option>
 										<option value="false" selected="selected">false</option>
 									</select>
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="If enabled, http-stats will send small number of requests in the beginning without including their results (can be used to warmup cache)."></span>
 								</div>
 							</div>
 
 							<div class="row top-buffer">
-								<label for="launchServer" class="col-md-4 control-label">launchServer</label>
+								<label for="launchServer" class="col-md-4 control-label">spawn</label>
 								<div class="col-md-7">
 									<div class="input-group ">
 										<input type="text" class="form-control input-sm" id="launchServer" disabled placeholder="node server.js">
@@ -125,6 +136,7 @@
 											<input type="checkbox" id="launchServerEnabled">
 										</span>
 									</div>
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="Pass in any cmd as a string, and the app will try to start the server in separate process, and run then run the test. After the test is complete created process will be killed."></span>
 								</div>
 							</div>
 
@@ -137,6 +149,7 @@
 											<input type="checkbox" id="pm2Enabled">
 										</span>
 									</div>
+									<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" title="If the server being tested is running with pm2, you can get memory and cpu usage data by providing the location of the machine here"></span>
 								</div>
 							</div>
 

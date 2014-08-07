@@ -164,6 +164,19 @@ require(['jquery', 'bootstrap'], function() {
             $('#pm2Enabled').change(pm2EnableListener);
             $('#peakConcurrency').change(concurrencyChangeListener);
             $('#endConcurrency').change(concurrencyChangeListener);
+
+            $('[data-toggle="tooltip"]').tooltip({
+                placement: 'left',
+            });
+
+/*
+            $('[data-toggle="tooltip"]').each(function(index, elem) {
+                console.log('here');
+                elem.tooltip({
+                    placement: 'left'
+                });
+            });
+*/
         }
     };
 

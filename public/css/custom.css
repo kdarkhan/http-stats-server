@@ -19,3 +19,11 @@
 .table {
     table-layout: fixed;
 }
+
+form fieldset span.glyphicon{
+    float:right;
+    margin-top:-22px;
+    margin-right:-20px;
+}
+
+form fieldset input
