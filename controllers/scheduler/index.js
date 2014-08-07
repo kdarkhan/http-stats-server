@@ -102,15 +102,35 @@ module.exports = function(router) {
                 });
             } else {
                 if (enable) {
-                    // TODO: add to running tasks here
-                    schedulerUtil.startTask();
+                    dbmanager.getTaskById(taskId, function(err, task) {
+                        if (err) {
+                            res.status(500).json({
+                                status: 'Error',
+                                message: err.toString()
+                            });
+                        } else {
+                            if (task) {
+                                schedulerUtil.startTask(task);
+                                res.json({
+                                    status: 'Success',
+                                    message: 'Successfully started the task'
+                                });
+                            } else {
+                                res.status(400).json({
+                                    status: 'Error',
+                                    message: 'Task is not found'
+                                });
+                            }
+                        }
+                    });
                 } else {
                     schedulerUtil.stopTask(taskId);
+                    res.json({
+                        status: 'Success',
+                        message: 'Successfully stopped the task'
+                    });
                 }
-                res.json({
-                    status: 'Success',
-                    message: 'Successfully set enabled to ' + enable
-                });
+
             }
         });
 

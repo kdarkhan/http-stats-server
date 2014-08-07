@@ -125,8 +125,12 @@ module.exports = function(router) {
                                     message: err.toString()
                                 });
                             } else {
-                                project.httpStatsOptions.requestOptions = JSON.stringify(
-                                    project.httpStatsOptions.requestOptions);
+                                var hsOptions = project.httpStatsOptions;
+                                hsOptions.requestOptions = JSON.stringify(
+                                    hsOptions.requestOptions);
+                                if (hsOptions.spawn) {
+                                    hsOptions.spawn = hsOptions.spawn.join(' ');
+                                }
                                 res.render('project', {
                                     project: project,
                                     results: JSON.stringify(results)
