@@ -4,66 +4,62 @@
 
 {<body}
 
-<div class="row">
-<div class="col-md-8 col-md-offset-2">
-<ul class="nav nav-tabs nav-justified" style="margin-bottom: 15px;">
-  <li class=""><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
-  <li class="active"><a href="#tasks" data-toggle="tab">Scheduled tasks</a></li>
-</ul>
+	<div class="row">
+		<div class="col-md-8 col-md-offset-2">
+			<ul class="nav nav-tabs nav-justified" style="margin-bottom: 15px;">
+				<li class=""><a href="/"><span class="glyphicon glyphicon-home"></span></a></li>
+				<li class="active"><a href="#tasks" data-toggle="tab">Scheduled tasks</a></li>
+			</ul>
 
-</div>
-</div>
-
-
-<div class="row">
-<div id="myTabContent" class="tab-content">
-    
-    <div class="tab-pane fade active in" id="tasks">
-        <div class="col-md-6 col-md-offset-3">
-            <div class="panel panel-success ">
-              <div class="panel-heading">tasks</div>
-
-              <table class="table table-hover">
-                <tr>
-                  <th class="col-md-4">Project name</th>
-                  <th class="col-md-4">Cron string</th>
-                  <th class="col-md-2">Enabled</th>
-                  <th class="col-md-2">Remove</th>
-                </tr>
-              {#tasks}
-                <tr id="row_{_id}">
-                  <td>{projectName}</td>
-                  <td>{cronString}</td>
-                  <td><input type="checkbox" {@eq key=enabled value="true" type="boolean"}checked{/eq} onchange="taskEnableListener('{_id}')"></td>
-                  <td><a href="javascript:void(0);" onclick="window.removeTask('{_id}');"><span class="glyphicon glyphicon-remove-circle"></span></a></td>
-                </tr>
-                {/tasks}
-
-                <tr id="newProjectRow">
-                <td><input id="newProjectName" type="text" class="form-control" placeholder="projectName"></td>
-                <td><input id="newCronString" type="text" class="form-control" placeholder="cronString"></td>
-                <td><input id="newEnabled" type="checkbox"></td>
-                <td></td>
-                </tr> 
-              </table>
-            </div>
-
-            <div class="">
-            <button id="addTask" type="button" class="btn btn-default">add task</button>
-            </div>
-
-        </div>
-        
-    </div>
-
-</div> 
-
-</div>
+		</div>
+	</div>
 
 
-    <input type="hidden" name="_csrf" value="{_csrf}">
+	<div class="row">
+		<div id="myTabContent" class="tab-content">
+		
+			<div class="tab-pane fade active in" id="tasks">
+				<div class="col-md-6 col-md-offset-3">
+					<div class="panel panel-success ">
+						<div class="panel-heading">tasks</div>
 
+						<table class="table table-hover">
+							<tr>
+								<th class="col-md-4">Project name</th>
+								<th class="col-md-4">Cron string</th>
+								<th class="col-md-2">Enabled</th>
+								<th class="col-md-2">Remove</th>
+							</tr>
+							{#tasks}
+								<tr id="row_{_id}">
+									<td>{projectName}</td>
+									<td>{cronString}</td>
+									<td><input type="checkbox" {@eq key=enabled value="true" type="boolean"}checked{/eq} onchange="taskEnableListener('{_id}')"></td>
+									<td><a href="javascript:void(0);" onclick="window.removeTask('{_id}');"><span class="glyphicon glyphicon-remove-circle"></span></a></td>
+								</tr>
+							{/tasks}
 
+							<tr id="newProjectRow">
+								<td><input id="newProjectName" type="text" class="form-control" placeholder="projectName"></td>
+								<td><input id="newCronString" type="text" class="form-control" placeholder="cronString"></td>
+								<td><input id="newEnabled" type="checkbox"></td>
+								<td></td>
+							</tr> 
+						</table>
+					</div>
 
-    <script data-main="/js/scheduler-client" src="/components/requirejs/require.js"></script>
+					<div class="">
+						<button id="addTask" type="button" class="btn btn-default">add task</button>
+					</div>
+				</div>
+				
+			</div>
+
+		</div> 
+
+	</div>
+
+	<input type="hidden" name="_csrf" value="{_csrf}">
+
+	<script data-main="/js/scheduler-client" src="/components/requirejs/require.js"></script>
 {/body}
