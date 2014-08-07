@@ -63,7 +63,7 @@ require(['jquery', 'bootstrap'], function() {
     window.removeTask = function removeTask(taskId) {
         if (confirm('Are you sure you want to remove the task?')) {
             $.ajax({
-                url: '/scheduler/',
+                url: '/scheduler',
                 type: 'DELETE',
                 data: {
                     _csrf: $('[name="_csrf"]').val(),
@@ -78,6 +78,37 @@ require(['jquery', 'bootstrap'], function() {
                     console.log('delete no', err && err.responseText);
                 });
         }
+    };
+
+    window.taskEnableListener = function taskEnableListener(taskId) {
+        console.log('clicked');
+
+        var elem = $('#row_' + taskId + ' input[type="checkbox"]');
+        elem.prop('disabled', 'disabled');
+        var checked = elem.is(':checked');
+        console.log('taskid is and checked is ', taskId, checked);
+        $.ajax({
+            url: '/scheduler/update_status',
+            type: 'POST',
+            data: {
+                _csrf: $('[name="_csrf"]').val(),
+                taskId: taskId,
+                enable: checked
+            }
+        })
+            .done(function(success) {
+                if (!(success &&success.status === 'Success')) {
+                    elem.prop('checked', !checked); 
+                } 
+            })
+            .fail(function(err) {
+                console.log('error happened ', err);
+                elem.prop('checked', !checked);
+            })
+            .always(function() {
+                elem.removeProp('disabled');
+            });
+
     };
 
     var app = {

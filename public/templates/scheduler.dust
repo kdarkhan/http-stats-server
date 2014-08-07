@@ -34,7 +34,7 @@
                 <tr id="row_{_id}">
                   <td>{projectName}</td>
                   <td>{cronString}</td>
-                  <td><input type="checkbox" {@eq key=enabled value="true" type="boolean"}checked{/eq}></td>
+                  <td><input type="checkbox" {@eq key=enabled value="true" type="boolean"}checked{/eq} onchange="taskEnableListener('{_id}')"></td>
                   <td><a href="javascript:void(0);" onclick="window.removeTask('{_id}');"><span class="glyphicon glyphicon-remove-circle"></span></a></td>
                 </tr>
                 {/tasks}

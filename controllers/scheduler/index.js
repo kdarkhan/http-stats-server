@@ -81,12 +81,38 @@ module.exports = function(router) {
                     message: err.toString()
                 });
             } else {
-                schedulerUtil.disableTask(taskId);
+                schedulerUtil.stopTask(taskId);
                 res.json({
                     status: 'Success',
                     message: 'Successfully removed task'
                 });
             }
         });
+    });
+
+    router.post('/update_status', function(req, res) {
+        var taskId = req.body.taskId,
+            enable = req.body.enable === 'true';
+
+        dbmanager.toggleTask(taskId, enable, function(err) {
+            if (err) {
+                res.status(500).json({
+                    status: 'Error',
+                    message: err.toString()
+                });
+            } else {
+                if (enable) {
+                    // TODO: add to running tasks here
+                    schedulerUtil.startTask();
+                } else {
+                    schedulerUtil.stopTask(taskId);
+                }
+                res.json({
+                    status: 'Success',
+                    message: 'Successfully set enabled to ' + enable
+                });
+            }
+        });
+
     });
 };
